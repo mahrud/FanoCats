@@ -1,5 +1,5 @@
 debug Core
-debug needsPackage("JSON", FileName => "./JSON.m2")
+debug "JSON"
 
 -- changes behavior of htmlFilename and html(TO)
 documentMode = "Markdown"
@@ -57,6 +57,7 @@ elapsedTime L = apply(makeDocumentTag methods resolution, fetchRawDocumentation)
 Macaulay2Doc#"raw documentation"#"resolution(Ideal)"
 
 
+needsPackage "JSON"
 debug Core
 getFullIndex = () -> (
     fullindex := new MutableHashTable;
@@ -68,9 +69,10 @@ getFullIndex = () -> (
 	db := openDatabase dbname;
 	re := "PrimaryTag => new DocumentTag from \\{.+?,\"(.+?)\",\"" | pkgname | "\"\\}";
 	-- TODO: order by type, put the package first?
+	dbkeys = select(dbkeys, key -> not match("\"undocumented\" => true", db#key));
 	scan(dbkeys, key -> fullindex#(fkey := pkgname | "::" | key) =
 	    if 0 < #(m := select(re, pkgname | "::\\1", db#key)) then m#0 else fkey));
     new HashTable from fullindex)
 fullindex = getFullIndex();
 #fullindex
-"_packages/index.json" << json(Sort => true, Indent => 2, fullindex) << endl << flush
+"_packages/fullindex.json" << json(Sort => true, Indent => 2, fullindex) << endl << flush
