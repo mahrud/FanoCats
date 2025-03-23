@@ -74,10 +74,8 @@ pre[class*="language-"] {
 }
 
 /* Inline code */
-dl { margin-bottom: 5px }
-dt { margin-bottom: 5px }
 :not(pre) > code[class*="language-"] {
-    display: flex;
+    display: contents;
     padding: 0.5em;
     width: 80%;
     margin: 0 0 0px;
@@ -85,6 +83,13 @@ dt { margin-bottom: 5px }
     border: 1px solid #ccc;
     border-radius: 2px;
     white-space: pre;
+}
+
+/* Usage */
+dl { margin-bottom: 5px }
+dt { margin-bottom: 5px }
+dd > code[class*="language-"] {
+    display: flex;
 }
 
 .token.comment,
