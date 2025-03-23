@@ -61,10 +61,10 @@ on how to use Docker for running, developing, debugging, testing, or packaging M
 
 ---
 
-#### Using Macaulay2 on Windows 10
+#### Using Macaulay2 on Windows 10+
 
 Macaulay2 can be used via the Windows Subsystem for Linux (WSL2).
-See this the [quickstart guide](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+See this the [quickstart guide](https://learn.microsoft.com/en-us/windows/wsl/install)
 and these [instructions](https://gist.github.com/eivan/cab0b0a29eebd91d767ea6ad7448368e)
 for setting up Macaulay2 on WSL2.
 
