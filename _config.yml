@@ -20,7 +20,7 @@ encoding: utf-8
 
 # Collections for entries
 collections:
-  docs:
+  examples:
     output: true
   packages:
     output: true

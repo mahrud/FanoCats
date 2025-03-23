@@ -18,7 +18,7 @@ parse: true
 
 <div class="row">
  <div class="col-lg-12 col-md-12">
-  Here is an example of how to compute the minimal free resolution of the [_twisted cubic_](docs/example):
+  Here is an example of how to compute the minimal free resolution of the [_twisted cubic_](examples/twisted-cubic):
  </div><div class="col-md-6">
 #### Code:
 ```
