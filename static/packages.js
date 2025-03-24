@@ -150,12 +150,30 @@ function openSearch(pkgname, query) {
     window.location.href = "{{ site.baseurl }}/search/?q=" + pkgname + "::" + query;
 }
 
+function parseKey(param) {
+    // [proto]://[addr]/[path]#[pkgname]::[fkey]#[anchor]
+    // A handful of keys contain '%', so before we decode, we encode it!
+    var hash = param.hash.replace(/%(?![0-9])/, "%25");
+    console.log(hash);
+    var uri = decodeURIComponent(hash);
+    var [, tag] = /#(.*)$/.exec(uri);
+    var [, pkgname, rest] = /(.+?)::(.*)$/.exec(tag);
+    if (!rest) return [pkgname, null, null];
+    // We also have to be careful when handling '#', so we assume that
+    // any '#' within a formatted key is followed by either ' ' or '? '
+    // and that anchors begin with an alphanumeric character or '-'
+    // "Macaulay2Doc::##description"
+    // "Macaulay2Doc::#?#description"
+    // "Macaulay2Doc::# List#description"
+    // "Macaulay2Doc::List # ZZ#description"
+    // "Macaulay2Doc::List #? ZZ#description"
+    var [, node, anchor] = /^(#|#\?|(?:# |#\? |[^#])+?)?(#[a-zA-Z0-9-].*)?$/.exec(rest);
+    return [pkgname, node, anchor];
+}
+
 function openNode(param) {
-    var regex = /#(.+)::(.+?)(#.*)?$/.exec(param);
-    if (regex === null) return openPackage(param);
-    var node = decodeURIComponent(regex[2]);
-    var pkgname = regex[1];
-    // TODO: sanitize this url
+    var [pkgname, node, anchor] = parseKey(param);
+    if (node === '') return openPackage(pkgname);
     $.getJSON(bucket+pkgname+'.json', function(data) {
 	var rawdoc = data["nodes"][node];
 	updateSidebar(data, pkgname, node);
@@ -164,7 +182,7 @@ function openNode(param) {
 	var content = template(rawdoc).replaceAll("../../Macaulay2/Style", "/LearnM2/static");
 	$('#content').html(content);
 	$('html, body').scrollTop(0);
-	updateOutline('', '#'+pkgname+'::'+node, regex[3]);
+	updateOutline('', '#'+pkgname+'::'+node, anchor);
 	Prism.highlightAll()
 	renderKaTeX();
     });
@@ -172,14 +190,13 @@ function openNode(param) {
 
 function openPackage(param) {
     // TODO: sanitize this url
-    var regex = /#(.+?)(#.*)?$/.exec(param);
-    var pkgname = regex[1];
+    var [, pkgname, , anchor] = /#(.+?)(::)?(#.*)?$/.exec(param);
     $.getJSON(bucket+pkgname+'.json', function(data) {
 	updateSidebar(data, pkgname, pkgname);
 	updateNavbar(param, pkgname, pkgname)
 	var content = template(data["nodes"][pkgname]).replaceAll("../../Macaulay2/Style", "/LearnM2/static");
 	$('#content').html(content);
-	updateOutline('', '#'+pkgname, regex[2]);
+	updateOutline('', '#'+pkgname, anchor);
 	Prism.highlightAll()
 	renderKaTeX();
     });
