@@ -20,6 +20,8 @@ var template = Handlebars.compile(`
 {{ displayHTML WaysToUse }}`);
 {% endraw %}
 
+//////////////////////////////////////////////////////////////////////
+
 {%- if site.url == "http://localhost:4000" %}
 var bucket = '{{ site.baseurl }}/packages/';
 {% else %}
@@ -27,6 +29,8 @@ var bucket = 'https://raw.githubusercontent.com/mahrud/LearnM2/refs/heads/learn/
 {% endif -%}
 
 var database = new Map([]);
+
+//////////////////////////////////////////////////////////////////////
 
 function updateSearch(results) {
     $('#outline-list').attr('open', true);
@@ -104,6 +108,48 @@ function updateNavbar(param, pkgname, title) {
     $('#headline').attr("href", param);
 }
 
+//////////////////////////////////////////////////////////////////////
+
+var searchBox = $("input#x-search-query");
+var urlParams = new URLSearchParams(window.location.search);
+
+function doSearch(query) {
+    if (query == null) query = searchBox.val();
+    if (query == "") updatePage();
+    var results = fuse.search(query);
+    updateSearch(results);
+    //var regex = new RegExp("<mark>(.*)</mark>", "gim");
+    //var content = document.getElementById("main").innerHTML;
+    //document.getElementById("main").innerHTML = content.replace(regex, "$1");
+    //doHighlight(query);
+}
+
+// Highlight search Query
+// function doHighlight(query) {
+//   // regex matches at beginning of line, end of line or word boundary
+//   var regex = new RegExp(
+//     "(?:^|\\b)(.{0,5})(" + query + ")(.{0,5})(?:$|\\b)",
+//     "gim",
+//   );
+//   var content = document.getElementById("main").innerHTML;
+//   document.getElementById("main").innerHTML = content.replace(
+//     regex,
+//     "$1<mark>$2</mark>$3",
+//   );
+// }
+
+var timeout = null;
+searchBox.on("keyup", function(event) {
+    clearTimeout(timeout);
+    timeout = setTimeout(doSearch, 100);
+});
+
+//////////////////////////////////////////////////////////////////////
+
+function openSearch(pkgname, query) {
+    window.location.href = "{{ site.baseurl }}/search/?q=" + pkgname + "::" + query;
+}
+
 function openNode(param) {
     var regex = /#(.+)::(.+?)(#.*)?$/.exec(param);
     if (regex === null) return openPackage(param);
@@ -111,9 +157,11 @@ function openNode(param) {
     var pkgname = regex[1];
     // TODO: sanitize this url
     $.getJSON(bucket+pkgname+'.json', function(data) {
+	var rawdoc = data["nodes"][node];
 	updateSidebar(data, pkgname, node);
-	updateNavbar(param, pkgname, data["nodes"][node]["Headline"])
-	var content = template(data["nodes"][node]).replaceAll("../../Macaulay2/Style", "/LearnM2/static");
+	if (rawdoc == null) return openSearch(pkgname, node);
+	updateNavbar(param, pkgname, rawdoc["Headline"])
+	var content = template(rawdoc).replaceAll("../../Macaulay2/Style", "/LearnM2/static");
 	$('#content').html(content);
 	$('html, body').scrollTop(0);
 	updateOutline('', '#'+pkgname+'::'+node, regex[3]);
@@ -137,6 +185,8 @@ function openPackage(param) {
     });
 }
 
+//////////////////////////////////////////////////////////////////////
+
 function updatePage(param) {
     if ( window.location.href.match(/#.+::.+$/) ) { openNode(window.location); }
     else if ( window.location.href.match(/#.+$/) ) { openPackage(window.location); }
@@ -146,3 +196,11 @@ $("a.package").click(function() { openPackage(this) });
 
 $(window).on('hashchange', updatePage);
 //window.onpopstate = updatePage
+
+$(document).ready(function () {
+    if (urlParams.has("q")) {
+	var query = urlParams.get("q");
+	searchBox.val(query);
+	doSearch(query);
+    }
+});
