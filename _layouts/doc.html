@@ -2,12 +2,20 @@
 layout: default
 ---
 
-<div id="x-projnav">
-  <a href="{{ site.baseurl }}/">M2:</a>
-  <span class="text-muted">{{ page.title }}</span>
-</div>
+<nav class="navbar justify-content-between navbar-expand-lg navbar-light bg-light headline-wrapper">
+  <span class="navbar-brand headline">
+    <span id="headline">{{ page.title }}</span>
+  </span>
 
-<article class="page">
-  <h2 class="page-title">{{ page.title }}</h2>
-  {{ content }}
-</article>
+  <form class="form-inline my-2 my-lg-0 search" id="x-search" role="search" action="{{ site.baseurl }}/search/">
+    <input class="form-control mr-sm-2" id="x-search-query" type="text" name="q" placeholder="Search" />
+  </form>
+</nav>
+
+<div class="main-wrapper">
+  <main class="main-content" id="main">
+    <article class="main-page-content">
+{{ content }}
+    </article>
+  </main>
+</div>
