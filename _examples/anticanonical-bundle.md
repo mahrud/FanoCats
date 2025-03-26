@@ -3,10 +3,7 @@ layout: doc
 title: The Anticanonical Bundle $-K_X$
 author: Mahrud Sayrafi
 status: published
-parse: true
 ---
-
-## FIXME: the last example isn't finishing
 
 Source: [_Question_](https://groups.google.com/g/macaulay2/c/Us0v1AKpcHI/m/PAq_ECugAwAJ) by Chris Dare, answered by Devlin Mallory. The following is only edited for clarify.
 
@@ -57,7 +54,7 @@ You can then compute the various cohomologies you want to.
 In your case, you know already from the adjunction formula that the anticanonical bundle will be the hyperplane section, so you can also do the following:
 
 {% M2 anticanonical-bundle %}
-use R/I;
+use S/I;
 H = dual sheaf module ideal(x_0)
 {% endM2 %}
 

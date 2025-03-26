@@ -3,7 +3,6 @@ layout: doc
 title: Smoothness of a Gushel-Mukai Threefold
 author: Mahrud Sayrafi
 status: published
-parse: true
 ---
 
 Source: [_Question_](https://groups.google.com/g/macaulay2/c/M6NBRiKKBw0/m/oSzucGkaAgAJ) by Chris Dare, answered by Xiaowen Hu. The following is only edited for clarify.

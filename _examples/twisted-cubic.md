@@ -2,7 +2,6 @@
 layout: doc
 title: The Twisted Cubic
 author: Mahrud Sayrafi
-parse: true
 ---
 
 Let's first define the coordinate ring of $ \PP^3 $, where the twisted cubic lies:

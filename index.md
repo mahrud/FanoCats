@@ -1,7 +1,6 @@
 ---
 layout: page
 title: Learn Macaulay2
-parse: true
 ---
 
 {::options parse_block_html="true" /}
