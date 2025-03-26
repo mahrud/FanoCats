@@ -32,12 +32,22 @@ var database = new Map([]);
 
 //////////////////////////////////////////////////////////////////////
 
+// encodeURI is a bit too strong
+// TODO: do we need to encode anything else?
+function encodeTag(fkey) {
+    return fkey.replaceAll(/"/g, "%22").replaceAll(/%(?![0-9])/g, "%25");
+}
+
+function decodeTag(str) {
+    return decodeURIComponent(encodeTag(str))
+}
+
 function updateSearch(results) {
     $('#outline-list').attr('open', true);
     $('.outline-list').html(
 	results.slice(0, 25).map(elt => `
         <li class="outline-item">
-          <a class="outline-link" href="#${database.get(elt.item)}">${elt.item}</a>
+          <a class="outline-link" href="#${encodeTag(database.get(elt.item))}">${elt.item}</a>
         </li>`).join(''));
 }
 
@@ -153,9 +163,9 @@ function openSearch(pkgname, query) {
 function parseKey(param) {
     // [proto]://[addr]/[path]#[pkgname]::[fkey]#[anchor]
     // A handful of keys contain '%', so before we decode, we encode it!
-    var hash = param.hash.replace(/%(?![0-9])/, "%25");
-    console.log(hash);
-    var uri = decodeURIComponent(hash);
+    if (typeof param === "object")
+	param = param.hash;
+    var uri = decodeTag(param);
     var [, tag] = /#(.*)$/.exec(uri);
     var [, pkgname, rest] = /(.+?)::(.*)$/.exec(tag);
     if (!rest) return [pkgname, null, null];

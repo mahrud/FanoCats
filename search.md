@@ -38,7 +38,7 @@ function updateSearch(results) {
     $('.outline-list').html(
 	results.slice(0, 100).map(elt => `
         <li class="outline-item">
-          <a class="outline-link" href="{{ site.baseurl }}/documentation/#${database.get(elt.item)}">${elt.item}</a>
+          <a class="outline-link" href="{{ site.baseurl }}/documentation/#${encodeTag(database.get(elt.item))}">${elt.item}</a>
         </li>`).join(''));
 }
 
@@ -46,8 +46,9 @@ $.getJSON(bucket+'fullindex.json', function(index) {
     database = new Map(Object.entries(index));
     fuse.setCollection(Array.from(database.keys()));
     if (urlParams.has("q")) {
-	searchBox.val(urlParams.get("q"));
-	doSearch();
+	var query = decodeTag(urlParams.get("q"));
+	searchBox.val(query);
+	doSearch(query);
     };
 });
 </script>
