@@ -29,6 +29,7 @@ collections:
 markdown: kramdown
 
 kramdown:
+  input: TeXdown
   # we use KaTeX
   math_engine: null
   # enable parsing Markdown inside html blocks
