@@ -5,6 +5,12 @@ title: Emacs Cheat Sheet
 
 ### Brief Cheat Sheet
 
+These are the most commonly used key bindings for Emacs. Here is the notation:
+- <kbd>C-x</kbd> means hold <kbd>Ctrl</kbd> down and press <kbd>x</kbd>;
+- <kbd>C-x C-f</kbd> means do <kbd>C-x</kbd> first, release, then do <kbd>C-f</kbd>.
+- <kbd>M-x</kbd> means hold <kbd>Alt</kbd> (or <kbd>Option</kbd>) down and press <kbd>x</kbd>;
+- <kbd>M-x grep</kbd> means do <kbd>M-x</kbd> first, release, then type <kbd>grep</kbd>.
+
 | Emacs Shortcut                             | Action                    |
 | ------------------------------------------ | ------------------------- |
 | <kbd>F12</kbd>                             | open M2 in a buffer       |
@@ -17,7 +23,11 @@ title: Emacs Cheat Sheet
 | <kbd>C-x 2</kbd>                           | split buffer horizontally |
 | <kbd>C-x 3</kbd>                           | split buffer vertically   |
 | <kbd>C-x 0</kbd>                           | merge buffer splitting    |
-| <kbd>C-Shift _</kbd>                       | undo!                     |
+| <kbd>C-u F12</kbd>                         | change the M2 command     |
+| <kbd>M-TAB</kbd>                           | auto-complete the word    |
+| <kbd>C-Shift-Underscore</kbd>              | undo!                     |
+| <kbd>C-x-Plus</kbd>                        | zoom in                   |
+| <kbd>C-x-Minus</kbd>                       | zoom out                  |
 | <kbd>C-g C-g</kbd>                         | GET ME OUTTA HERE         |
 {: style="width: 60%"}
 
