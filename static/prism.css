@@ -1,4 +1,4 @@
-/* PrismJS 1.23.0
+/* PrismJS 1.30.0
 https://prismjs.com/download.html#themes=prism */
 /**
  * prism.js default theme for JavaScript, CSS and HTML
@@ -9,7 +9,7 @@ https://prismjs.com/download.html#themes=prism */
 code[class*="language-"],
 pre[class*="language-"] {
 	color: black;
-	background: #f5f2f0;
+	background: none;
 	text-shadow: 0 1px white;
 	font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 	text-align: left;
@@ -48,31 +48,32 @@ code[class*="language-"]::selection, code[class*="language-"] ::selection {
 	}
 }
 
-/* Code blocks */
+/* Code blocks (custom) */
 table.examples {
     width: 100%;
     table-layout:fixed;
 }
 
-/* front page blocks */
+/* Front page blocks (custom) */
 figure > pre[class*="language-"] {
 	padding: 1em;
 	margin: .5em 0;
 	overflow: auto;
 }
 
-/* documentation blocks */
+/* Documentation blocks (custom) */
 :not(figure) > pre[class*="language-"] {
 	margin: .05em 0;
 	overflow: auto;
 }
 
-pre > code[class*="language-"],
+:not(pre) > code[class*="language-"],
 pre[class*="language-"] {
-    font-size: 0.75rem;
+	font-size: 0.75rem;
+	background: #f5f2f0;
 }
 
-/* Inline code */
+/* Inline code (customized) */
 :not(pre) > code[class*="language-"] {
     display: contents;
     padding: 0.5em;
@@ -84,7 +85,7 @@ pre[class*="language-"] {
     white-space: pre;
 }
 
-/* Usage */
+/* Usage (custom) */
 dl { margin-bottom: 5px }
 dt { margin-bottom: 5px }
 dd > code[class*="language-"] {
@@ -163,4 +164,3 @@ dd > code[class*="language-"] {
 .token.entity {
 	cursor: help;
 }
-
