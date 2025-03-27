@@ -12,3 +12,9 @@ This is a collection of interesting Macaulay2-fu observed in the wild, sometimes
 {% endfor %}
 
 [Google group]: http://groups.google.com/group/macaulay2
+
+---
+
+##### See also
+- [mathematical tutorials](help/#Macaulay2Doc::Macaulay2Doc#mathematical-tutorials)
+- [mathematical computations](help/#Macaulay2Doc::Macaulay2Doc#mathematical-computations)

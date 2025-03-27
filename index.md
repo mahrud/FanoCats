@@ -5,7 +5,12 @@ title: Learn Macaulay2
 
 {::options parse_block_html="true" /}
 
-[_Macaulay2_](https://macaulay2.com/) is an interpreted, dynamically typed programming language intended to support research in [algebraic geometry] and [commutative algebra] through open sourced software.
+[_Macaulay2_](https://macaulay2.com/) is an interpreted, dynamically typed programming language intended to support research and experiments in [algebraic geometry] and [commutative algebra] through open sourced software.
+
+{% comment %}
+**Interested in contributing?** [Get in touch!](mailto:mahrud@fields.utoronto.ca)
+{: style="background-color: #fef5c4; border-left: 8px solid #FADF98; padding: 10px 30px;"}
+{% endcomment %}
 
 [algebraic geometry]: https://en.wikipedia.org/wiki/Algebraic_geometry
 [commutative algebra]: https://en.wikipedia.org/wiki/Commutative_algebra
@@ -24,6 +29,7 @@ title: Learn Macaulay2
 R = QQ[x, y, z, w]; -- defines a ring
 I = monomialCurveIdeal(R, {1, 2, 3})
 C = res I -- computes the resolution
+betti I -- displays the Betti table
 ```
 <br />
 
@@ -40,6 +46,17 @@ help monomialCurveIdeal
 -- documentation on the web
 viewHelp monomialCurveIdeal
 ```
+```
+-- documentation headlines about curves
+headlines about "curve"
+```
+<br />
+**Also try**: (either click or copy & enter in M2)
+{: style="margin-bottom: 0px"}
+- [`help "reading the documentation"`](help/#Macaulay2Doc::reading the documentation)
+- [`help "getting help or reporting bugs"`](help/#Macaulay2Doc::getting help or reporting bugs)
+- [`help "Tutorial: Modules in Macaulay2"`](help/#Macaulay2Doc::Tutorial: Modules in Macaulay2)
+- [`help "computing Groebner bases"`](help/#Macaulay2Doc::computing Groebner bases)
 
  </div>
  <div class="col-md-6">
@@ -48,6 +65,7 @@ viewHelp monomialCurveIdeal
 R = QQ[x, y, z, w];
 I = monomialCurveIdeal(R, {1, 2, 3})
 C = res I
+betti C
 {% endM2 %}
  </div>
 </div>
@@ -64,15 +82,21 @@ C = res I
 <div class="row justify-content-around">
  <div class="col-auto feature">
   <h4>Learn by Reading</h4>
-  - [Beginning Macaulay2]({{ site.baseurl }}/packages/#BeginningMacaulay2) <!-- TODO: [a first Macaulay2 session](a first Macaulay2 session)? -->
+  - [Getting Started](help/#Macaulay2Doc::Macaulay2Doc#getting-started)
   - [Computations Book](book)
+  {% comment %}
   - [Cheat Sheet](cheatsheet)
+  - [Beginning Macaulay2](packages/#BeginningMacaulay2)
+  {% endcomment %}
  </div>
 
  <div class="col-auto feature">
   <h4>Learn by Writing</h4>
-  - [Project Ideas](https://faculty.math.illinois.edu/Macaulay2/dev/projects/)
+  - [A first Macaulay2 session](help/#Macaulay2Doc::Macaulay2Doc#a first Macaulay2 session)
+  - [Project Ideas](https://github.com/Macaulay2/M2/wiki/Projects)
+  {% comment %}
   - [Editors and Workflows](examples)
+  {% endcomment %}
  </div>
 
  <div class="col-auto feature">
@@ -83,21 +107,23 @@ C = res I
 
  <div class="col-auto feature">
   <h4>Documentation</h4>
-  - [Language Reference](reference) <!-- ({{ site.baseurl }}/packages/#Macaulay2Doc::The Macaulay2 language) -->
+  - [Language Reference](help/#Macaulay2Doc::The Macaulay2 language)
   - [Internal Notes](https://github.com/Macaulay2/M2/wiki/Internals%3A-Meeting-Notes)
   - [Source Code](https://github.com/Macaulay2/M2)
  </div>
 
  <div class="col-auto feature">
   <h4>M2 for Research</h4>
-  - [Books and Articles](https://faculty.math.illinois.edu/Macaulay2/Publications)
+  - [JSAG](https://msp.org/jsag/about/journal/about.html)
+  {% comment %}
   - [Citing Macaulay2](citing)
-  - [JSAG](https://j-sag.org/)
+  - [Books and Articles](https://faculty.math.illinois.edu/Macaulay2/Publications)
+  {% endcomment %}
  </div>
 
  <div class="col-auto feature">
   <h4>Events & Community</h4>
-  - [Workshops]({{ site.baseurl }}/events)
+  - [Workshops](events)
   - [Slack Workspace](https://m2internals.slack.com/)
   - [Google Groups](https://groups.google.com/group/macaulay2)
  </div>
@@ -111,13 +137,14 @@ C = res I
  </div>
 
  <div class="col feature">
-  The recommended IDE for using Macaulay2 in research is [Emacs](https://www.gnu.org/software/emacs/)
-  (here is a [cheat sheet](https://www.gnu.org/software/emacs/refcards/pdf/refcard.pdf)).
+  The recommended IDE for using Macaulay2 in research is [Emacs](editors). \\
   Community plugins are also available for
   [Vim](https://github.com/Macaulay2/M2/tree/master/M2/Macaulay2/editors/vim),
   [Atom](https://github.com/Macaulay2/language-macaulay2),
   [VSCode](https://github.com/coreysharris/vscode-macaulay2), and
   [Sublime](https://github.com/Macaulay2/M2/wiki/Using-Macaulay2-with-Sublime).
+  
+  Here are some screenshots of Macaulay2's interface in Emacs:
  </div>
 </div>
 
@@ -132,15 +159,15 @@ C = res I
 
 ---
 
+{% comment %}
 <div class="row justify-content-around align-items-center">
  <div class="col feature">
   Development of Macaulay2 by [Daniel R. Grayson](https://faculty.math.illinois.edu/~dan/)
   and [Michael E. Stillman](https://math.cornell.edu/michael-e-stillman) has been funded
   by the National Science Foundation since 1992. We also acknowledge our many
-  [contributors](contributors), [software libraries] used by Macaulay2,
+  [contributors](contribute), [software libraries] used by Macaulay2,
   as well as [Macaulay](https://www.math.columbia.edu/~bayer/Macaulay/),
-  the predecessor of Macaulay2 written by Dave Bayer and Michael Stillman.
-
+  the predecessor of Macaulay2 written by Dave Bayer and Michael Stillman. \\
   The namesake of Macaulay2 is [Francis Macaulay FRS](https://en.wikipedia.org/wiki/Francis_Sowerby_Macaulay).
  </div>
 
@@ -152,26 +179,16 @@ C = res I
 [software libraries]: {{site.baseurl }}/packages/#Macaulay2Doc::Copyright and license
 
 <!--
----
-
 <div class="row justify-content-around align-items-center">
  <div class="col feature">
  - A random paper referring to Macaulay2: <script type="text/javascript">citation();</script>
  - A random Macaulay2 package: <script type="text/javascript">documentation();</script>
  </div>
 </div>
-
----
-
-<div class="row justify-content-around align-items-center">
- <div class="col feature">
- </div>
-</div>
-
 -->
+{% endcomment %}
 
-<script src="{{ site.url }}{{ site.baseurl }}/static/packages.js"></script>
-<script>
-var bucket = '{{ site.baseurl }}/packages/';
-$.getJSON(bucket+'fullindex.json', function(data) { updateFuse(data, '') })
-</script>
+<footer>
+  This website, Learn**M2**, is a personal project of [Mahrud Sayrafi](https://mahrud.github.io/). \\
+  Bug reports and contributions are welcome on [GitHub](https://github.com/mahrud/LearnM2/).
+</footer>
