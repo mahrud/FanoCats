@@ -35,11 +35,11 @@ var database = new Map([]);
 // encodeURI is a bit too strong
 // TODO: do we need to encode anything else?
 function encodeTag(fkey) {
-    return fkey.replaceAll(/"/g, "%22").replaceAll(/%(?![0-9])/g, "%25");
+    return fkey.replaceAll(/"/g, "%22").replaceAll(/%(?![0-9A-F]{2})/g, "%25");
 }
 
 function decodeTag(str) {
-    return decodeURIComponent(encodeTag(str))
+    return decodeURIComponent(encodeTag(str));
 }
 
 function updateSearch(results) {
