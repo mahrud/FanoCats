@@ -118,6 +118,7 @@ function updateNavbar(param, pkgname, title) {
     $('#pkgname').attr("href", "#"+pkgname);
     $('#headline').html(title);
     $('#headline').attr("href", param);
+    document.title = pkgname + " :: " + title[0];
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -197,8 +198,8 @@ function openNode(param) {
     if (node === '') return openPackage(pkgname);
     $.getJSON(bucket+pkgname+'.json', function(data) {
 	var rawdoc = data["nodes"][node];
-	updateSidebar(data, pkgname, node);
 	if (rawdoc == null) return openSearch(pkgname, node);
+	updateSidebar(data, pkgname, node);
 	updateNavbar(param, pkgname, rawdoc["Headline"]);
 	var content = fixLinks(template(rawdoc));
 	$('#content').html(content);
@@ -206,21 +207,22 @@ function openNode(param) {
 	updateOutline('', '#'+pkgname+'::'+node, anchor);
 	Prism.highlightAll();
 	renderKaTeX();
-    });
+    }).fail(function() { openSearch(pkgname, node) });;
 }
 
 function openPackage(param) {
     // TODO: sanitize this url
     var [, pkgname, , anchor] = /#(.+?)(::)?(#.*)?$/.exec(param);
     $.getJSON(bucket+pkgname+'.json', function(data) {
+	var rawdoc = data["nodes"][pkgname];
 	updateSidebar(data, pkgname, pkgname);
-	updateNavbar(param, pkgname, pkgname);
-	var content = fixLinks(template(data["nodes"][pkgname]));
+	updateNavbar(param, pkgname, rawdoc["Headline"]);
+	var content = fixLinks(template(rawdoc));
 	$('#content').html(content);
 	updateOutline('', '#'+pkgname, anchor);
 	Prism.highlightAll();
 	renderKaTeX();
-    });
+    }).fail(function() { openSearch(pkgname, '') });
 }
 
 //////////////////////////////////////////////////////////////////////
