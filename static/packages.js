@@ -163,8 +163,6 @@ function openSearch(pkgname, query) {
 function parseKey(param) {
     // [proto]://[addr]/[path]#[pkgname]::[fkey]#[anchor]
     // A handful of keys contain '%', so before we decode, we encode it!
-    if (typeof param === "object")
-	param = param.hash;
     var uri = decodeTag(param);
     var [, tag] = /#(.*)$/.exec(uri);
     var [, pkgname, rest] = /(.+?)::(.*)$/.exec(tag);
@@ -214,9 +212,16 @@ function openPackage(param) {
 
 //////////////////////////////////////////////////////////////////////
 
+var start_page = "#Macaulay2Doc"
+
 function updatePage(param) {
-    if ( window.location.href.match(/#.+::.+$/) ) { openNode(window.location); }
-    else if ( window.location.href.match(/#.+$/) ) { openPackage(window.location); }
+    if (typeof param == "string")
+	start_page = param;
+    if ( window.location.hash.match(/#.+::.+$/) )
+	openNode(window.location.hash)
+    else if ( window.location.hash.match(/#.+$/) )
+	openPackage(window.location.hash)
+    else openNode(start_page);
 }
 
 $("a.package").click(function() { openPackage(this) });
