@@ -48,12 +48,14 @@
       var macros = {
           "\\PP": "\\mathbb{P}", "\\AA": "\\mathbb{A}", "\\NN": "\\mathbb{N}", "\\ZZ": "\\mathbb{Z}",
           "\\kk": "\\mathbb{k}", "\\QQ": "\\mathbb{Q}", "\\RR": "\\mathbb{R}", "\\CC": "\\mathbb{C}",
-      };
+      }, ignoredTags = [
+	  "kbd", "var", "samp", "script", "noscript", "style", "textarea", "pre", "code", "option"
+      ], delimiters = [{ left: "$", right: "$", display: false }];
 
       function renderKaTeX() {
-	  renderMathInElement(document.body, { macros: macros });
+	  renderMathInElement(document.body, { macros, ignoredTags });
 	  // KaTeX auto-renders $$..$$, \\(..\\), \\[..\\], and equation, align, gather, and CD envs, but not $..$!
-	  renderMathInElement(document.body, { macros: macros, delimiters: [{ left: "$", right: "$", display: false }] });
+	  renderMathInElement(document.body, { macros, ignoredTags, delimiters });
       }
 
       document.addEventListener("DOMContentLoaded", renderKaTeX);
