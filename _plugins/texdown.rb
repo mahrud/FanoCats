@@ -43,52 +43,53 @@ M2_output_RE = /\n+(?=i+[1-9][0-9]* : )/
 M2_args = "--silent --print-width 0 --stop " \
   "--int --no-readline -q --no-randomize".split
 
-class Kramdown::Converter::Html
-  def initialize(root, options)
-    super
-    @footnote_counter = @footnote_start = @options[:footnote_nr]
-    @footnotes = []
-    @footnotes_by_name = {}
-    @footnote_location = nil
-    @toc = []
-    @toc_code = nil
-    @indent = 2
-    @stack = []
+def capture_M2(lines)
+  stdin, stdouterr, proc = Open3.popen2e("M2", *M2_args)
+  stdin.puts lines.join("\n")
+  stdin.puts "exit(0)"
+  output = stdouterr.readlines().join("")
+  stdin.close
+  stdouterr.close
 
-    # stash string representation of symbol to avoid allocations from multiple interpolations.
-    @highlighter_class = " highlighter-#{options[:syntax_highlighter]}"
-    @dispatcher = Hash.new {|h, k| h[k] = :"convert_#{k}" }
+  if proc.value.success?
+    # split, then drop first and last entries
+    return output.split(M2_output_RE)[1..-2]
+  else
+    STDERR.puts output
+    raise "M2 process failed with status #{proc.value.exitstatus}"
+  end
+end
+
+class Kramdown::Converter::Html
+  alias :old_initialize :initialize
+
+  def initialize(root, options)
+    old_initialize(root, options)
 
     @M2_counter = 0
-
-    Open3.popen2e("M2", *M2_args) do |stdin, stdouterr, proc|
-      puts "running M2 ..."
-      stdin.puts @root.options[:M2].join("\n")
-      stdin.puts "exit(0)"
-      output = stdouterr.readlines().join("")
+    if 0 < @root.options[:M2].count
+      print "\t Capturing M2 output ... "
+      @M2_output = capture_M2(@root.options[:M2])
       puts "done!"
-      stdin.close
-      stdouterr.close
-
-      if proc.value.success?
-        @M2out = output.split(M2_output_RE)[1..-2] # split, then drop first and last entries
-      else
-        raise "*** M2 process failed with status #{proc.value.exitstatus}:\n#{output}"
-      end
     end
   end
 
-  def convert_math(el, indent)
-    "#{el.value}"
-  end
-
-  M2_table_template = "<figure class=\"highlight\">\n%{row}</figure>"
-  M2_example_template = "<pre class=\"language-macaulay2\"><code>%{content}</code></pre>"
+  M2_table_template = "<figure class=\"language-macaulay2\">\n%{row}</figure>"
+  M2_example_template = "<pre><code>%{content}</code></pre>"
 
   def convert_M2(el, indent)
     s, e = @M2_counter, @M2_counter += el.value.lines.count
-    rows = @M2out[s .. e-1]
-    M2_table_template % { row: rows.map { |content| M2_example_template % { content: content } }.join }
+    rows = @M2_output[s .. e-1]
+    M2_table_template % {
+      row: rows.map { |content|
+        M2_example_template % { content: content }
+      }.join
+    }
+  end
+
+  # LaTeX content will be rendered by KaTeX
+  def convert_math(el, indent)
+    "#{el.value}"
   end
 end
 
