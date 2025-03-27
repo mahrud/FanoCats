@@ -27,6 +27,7 @@ var bucket = '{{ site.baseurl }}/packages/';
 {% else %}
 var bucket = 'https://raw.githubusercontent.com/mahrud/LearnM2/refs/heads/learn/_packages/';
 {% endif -%}
+var repo = 'https://github.com/Macaulay2/M2/blob/development/'
 
 var database = new Map([]);
 
@@ -157,8 +158,17 @@ searchBox.on("keyup", function(event) {
 
 //////////////////////////////////////////////////////////////////////
 
+// search the full index if the node isn't found
 function openSearch(pkgname, query) {
     window.location.href = "{{ site.baseurl }}/search/?q=" + pkgname + "::" + query;
+}
+
+// hot-swapping the links for better online experience
+function fixLinks(content) {
+    return content
+	.replace(/href="..\/..\/Macaulay2\/.+">(.+):(.+):(.+)<\/a>/,
+		 "href=\"" + repo + "M2/Macaulay2/packages/$1#L$2\">$1:$2:$3</a>")
+	.replaceAll("../../Macaulay2/Style", "/LearnM2/static");
 }
 
 // TODO: also handle #[pkgname] and #[pkgname]#[anchor] inputs
@@ -189,12 +199,12 @@ function openNode(param) {
 	var rawdoc = data["nodes"][node];
 	updateSidebar(data, pkgname, node);
 	if (rawdoc == null) return openSearch(pkgname, node);
-	updateNavbar(param, pkgname, rawdoc["Headline"])
-	var content = template(rawdoc).replaceAll("../../Macaulay2/Style", "/LearnM2/static");
+	updateNavbar(param, pkgname, rawdoc["Headline"]);
+	var content = fixLinks(template(rawdoc));
 	$('#content').html(content);
 	$('html, body').scrollTop(0);
 	updateOutline('', '#'+pkgname+'::'+node, anchor);
-	Prism.highlightAll()
+	Prism.highlightAll();
 	renderKaTeX();
     });
 }
@@ -204,11 +214,11 @@ function openPackage(param) {
     var [, pkgname, , anchor] = /#(.+?)(::)?(#.*)?$/.exec(param);
     $.getJSON(bucket+pkgname+'.json', function(data) {
 	updateSidebar(data, pkgname, pkgname);
-	updateNavbar(param, pkgname, pkgname)
-	var content = template(data["nodes"][pkgname]).replaceAll("../../Macaulay2/Style", "/LearnM2/static");
+	updateNavbar(param, pkgname, pkgname);
+	var content = fixLinks(template(data["nodes"][pkgname]));
 	$('#content').html(content);
 	updateOutline('', '#'+pkgname, anchor);
-	Prism.highlightAll()
+	Prism.highlightAll();
 	renderKaTeX();
     });
 }
