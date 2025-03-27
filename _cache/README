@@ -1,0 +1,2 @@
+M2 output files are cached in this folder.
+The filename is the SHA256 digest of the input.

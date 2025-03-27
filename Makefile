@@ -4,16 +4,15 @@ check:; bundle exec jekyll build -d _site/LearnM2
 	bundle exec htmlproofer ./_site
 
 serve:;	bundle exec jekyll serve -s . -d _site/
-
-clean:; rm -rf _outputs/*.{input,output,tmp}
-	rm -rf _site/*
-	rm -rf docs
-
-build:	clean
-	bundle exec jekyll build -s . -d docs/
-
+build:;	bundle exec jekyll build -s . -d _site/
 push:	build
-	git add docs && git commit -m "generated on `date`" && git push --force && git reset HEAD~1
+	git add _cache && \
+	git commit -m "generated cache on `date`" && \
+	git push
+
+clean: clean-sites
+clean-sites:; rm -rf _site/*
+clean-cache:; rm -rf _cache/*.m2
 
 install:
 	gem install jekyll

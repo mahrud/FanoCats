@@ -37,6 +37,7 @@ class Kramdown::Parser::TeXdown < Kramdown::Parser::GFM
 end
 
 require 'kramdown/converter/html'
+require 'digest'
 
 # see m2/examples.m2
 M2_output_RE = /\n+(?=i+[1-9][0-9]* : )/
@@ -44,18 +45,35 @@ M2_args = "--silent --print-width 0 --stop " \
   "--int --no-readline -q --no-randomize".split
 
 def capture_M2(lines)
+  print "\t Capturing M2 output ... "
+  inputs = lines.join("\n")
+
+  # if the same exact input lines are cached, use that
+  digest = Digest::SHA256.hexdigest inputs
+  cache = "_cache/" + digest + ".m2"
+  if File.file?(cache)
+    puts "cache hit!"
+    return File.read(cache).split(M2_output_RE)[1..-2]
+  end
+
+  # otherwise run M2
   stdin, stdouterr, proc = Open3.popen2e("M2", *M2_args)
-  stdin.puts lines.join("\n")
+  stdin.puts inputs
   stdin.puts "exit(0)"
   output = stdouterr.readlines().join("")
   stdin.close
   stdouterr.close
 
   if proc.value.success?
+    File.write(cache, output)
+    puts "done!"
     # split, then drop first and last entries
     return output.split(M2_output_RE)[1..-2]
   else
-    STDERR.puts output
+    error_log = "_cache/" + digest + ".error"
+    puts "error:\n" + error_log
+    File.write(error_log, output)
+    STDERR.puts output.lines[-[output.lines.count, 10].min..].join()
     raise "M2 process failed with status #{proc.value.exitstatus}"
   end
 end
@@ -68,9 +86,7 @@ class Kramdown::Converter::Html
 
     @M2_counter = 0
     if 0 < @root.options[:M2].count
-      print "\t Capturing M2 output ... "
       @M2_output = capture_M2(@root.options[:M2])
-      puts "done!"
     end
   end
 

@@ -49,9 +49,8 @@ exclude:
   - LICENSE.md
   - proof.gemspec
   - Makefile
-  - docs
-  - examples/
-  - _outputs
+  - _cache
+  - generate-json.m2
 
 # Theme
 remote_theme: "mahrud/proof"
