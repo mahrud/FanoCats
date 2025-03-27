@@ -8,13 +8,6 @@ layout: default
     <span class="text-muted">::</span>
     <a id="headline" href="#Macaulay2Doc"></a>
   </span>
-  <!--
-  <span style="float:right" >
-    <a id="pkg-index">index</a>
-    <span class="text-muted">|</span>
-    <a id="pkg-toc">toc</a>
-  </span>
-  -->
   <form class="form-inline my-2 my-lg-0 search" id="x-search" role="search" action="{{ site.baseurl }}/search/">
     <input class="form-control mr-sm-2" id="x-search-query" type="text" name="q" placeholder="Search" />
   </form>
@@ -23,13 +16,15 @@ layout: default
 <script src="{{ site.url }}{{ site.baseurl }}/static/packages.js"></script>
 
 <div class="main-wrapper">
-{% if page.layout == "entry" %}
-  {%- include sidebar.html -%}
-{%- endif %}
+{% include sidebar.html %}
 
   <main class="main-content" id="main">
-    <article class="main-page-content">
+    <article class="main-page-content" id="content">
+
+<!-- ################################ help ############################### -->
 {{ content }}
+<!-- ##################################################################### -->
+
     </article>
   </main>
 </div>

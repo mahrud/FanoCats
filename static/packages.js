@@ -85,10 +85,11 @@ function makeSubmenu(toc, pkgname, current) {
     var menu = Object.entries(toc).map(function([key, subtoc]) {
 	open = open || key == current;
 	var n = Object.keys(subtoc).length;
+	var node = "#" + pkgname + "::" + key;
 	var style = key == current ? `background-color: yellow` : "";
 	if (Object.keys(subtoc).length == 0) return `
         <li class="index-item">
-          <a style="${style}" href="#${pkgname}::${key}" onclick="openNode(this)"><tt>${key}</tt></a>
+          <a style="${style}" href="${node}" onclick="openNode('${node}')"><tt>${key}</tt></a>
         </li>`;
 	var [submenu, subopen] = makeSubmenu(subtoc, pkgname, current);
 	var openattr = (subopen || key == current) ? "open" : "";
@@ -96,7 +97,7 @@ function makeSubmenu(toc, pkgname, current) {
 	return `
         <li class="index-item toggle">
           <details ${openattr}>
-            <summary><a style="${style}" href="#${pkgname}::${key}" onclick="openNode(this)"><tt>${key}</tt></a></summary>
+            <summary><a style="${style}" href="${node}" onclick="openNode('${node}')"><tt>${key}</tt></a></summary>
             <ol>${submenu}
             </ol>
           </details>
@@ -125,7 +126,7 @@ var urlParams = new URLSearchParams(window.location.search);
 
 function doSearch(query) {
     if (query == null) query = searchBox.val();
-    if (query == "") updatePage();
+    if (query == "") help();
     var results = fuse.search(query);
     updateSearch(results);
     //var regex = new RegExp("<mark>(.*)</mark>", "gim");
@@ -160,6 +161,7 @@ function openSearch(pkgname, query) {
     window.location.href = "{{ site.baseurl }}/search/?q=" + pkgname + "::" + query;
 }
 
+// TODO: also handle #[pkgname] and #[pkgname]#[anchor] inputs
 function parseKey(param) {
     // [proto]://[addr]/[path]#[pkgname]::[fkey]#[anchor]
     // A handful of keys contain '%', so before we decode, we encode it!
@@ -179,6 +181,7 @@ function parseKey(param) {
     return [pkgname, node, anchor];
 }
 
+// TODO: should parseKey be called before here?
 function openNode(param) {
     var [pkgname, node, anchor] = parseKey(param);
     if (node === '') return openPackage(pkgname);
@@ -212,22 +215,21 @@ function openPackage(param) {
 
 //////////////////////////////////////////////////////////////////////
 
-var start_page = "#Macaulay2Doc"
+var start_page = "Macaulay2Doc::Macaulay2Doc"
 
-function updatePage(param) {
+function help(param) {
     if (typeof param == "string")
 	start_page = param;
-    if ( window.location.hash.match(/#.+::.+$/) )
-	openNode(window.location.hash)
-    else if ( window.location.hash.match(/#.+$/) )
-	openPackage(window.location.hash)
-    else openNode(start_page);
+    var hash = window.location.hash;
+    if ( hash.match(/#.+::.+$/) ) return openNode(hash);
+    if ( hash.match(/#.+$/) )     return openPackage(hash);
+    openNode("#" + start_page);
 }
 
 $("a.package").click(function() { openPackage(this) });
 
-$(window).on('hashchange', updatePage);
-//window.onpopstate = updatePage
+$(window).on('hashchange', help);
+//window.onpopstate = help
 
 $(document).ready(function () {
     if (urlParams.has("q")) {
