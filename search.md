@@ -38,7 +38,7 @@ function updateSearch(results) {
     $('.outline-list').html(
 	results.slice(0, 100).map(elt => `
         <li class="outline-item">
-          <a class="outline-link" href="{{ site.baseurl }}/documentation/#${encodeTag(database.get(elt.item))}">${elt.item}</a>
+          <a class="outline-link" href="{{ site.baseurl }}/help/#${encodeTag(database.get(elt.item))}">${elt.item}</a>
         </li>`).join(''));
 }
 
