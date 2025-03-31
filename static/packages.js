@@ -43,7 +43,9 @@ function decodeTag(str) {
     return decodeURIComponent(encodeTag(str));
 }
 
-function updateSearch(results) {
+var results = null;
+function updateSearch(input) {
+    if (input) results = input;
     $('#outline-list').attr('open', true);
     $('.outline-list').html(
 	results.slice(0, 25).map(elt => `
