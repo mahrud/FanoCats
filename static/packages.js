@@ -116,6 +116,8 @@ function updateSidebar(data, pkgname, current) {
 }
 
 function updateNavbar(param, pkgname, title) {
+    if (pkgname == title[0])
+	title = [ title[1].replace("-- ", "") ];
     $('#pkgname').html(pkgname);
     $('#pkgname').attr("href", "#"+pkgname);
     $('#headline').html(title);
