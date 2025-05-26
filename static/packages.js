@@ -22,10 +22,11 @@ var template = Handlebars.compile(`
 
 //////////////////////////////////////////////////////////////////////
 
+var version = "v1.25.05"
 {%- if site.url == "http://localhost:4000" %}
-var bucket = '{{ site.baseurl }}/packages/v1.25.05/';
+var bucket = '{{ site.baseurl }}/packages/';
 {% else %}
-var bucket = 'https://raw.githubusercontent.com/mahrud/LearnM2/refs/heads/learn/_packages/v1.25.05/';
+var bucket = 'https://raw.githubusercontent.com/mahrud/LearnM2/refs/heads/learn/_packages/';
 {% endif -%}
 var repo = 'https://github.com/Macaulay2/M2/blob/development/'
 
@@ -200,7 +201,7 @@ function parseKey(param) {
 function openNode(param) {
     var [pkgname, node, anchor] = parseKey(param);
     if (node === '') return openPackage(pkgname);
-    $.getJSON(bucket+pkgname+'.json', function(data) {
+    $.getJSON(bucket+version+"/"+pkgname+'.json', function(data) {
 	var rawdoc = data["nodes"][node];
 	if (rawdoc == null) return openSearch(pkgname, node);
 	updateSidebar(data, pkgname, node);
@@ -217,7 +218,7 @@ function openNode(param) {
 function openPackage(param) {
     // TODO: sanitize this url
     var [, pkgname, , anchor] = /#(.+?)(::)?(#.*)?$/.exec(param);
-    $.getJSON(bucket+pkgname+'.json', function(data) {
+    $.getJSON(bucket+version+"/"+pkgname+'.json', function(data) {
 	var rawdoc = data["nodes"][pkgname];
 	updateSidebar(data, pkgname, pkgname);
 	updateNavbar(param, pkgname, rawdoc["Headline"]);
@@ -234,6 +235,8 @@ function openPackage(param) {
 var start_page = "Macaulay2Doc::Macaulay2Doc"
 
 function help(param) {
+    if (urlParams.has("v"))
+	version = urlParams.get("v");
     if (typeof param == "string")
 	start_page = param;
     var hash = window.location.hash;

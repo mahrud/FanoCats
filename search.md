@@ -51,7 +51,7 @@ function updateSearch(input) {
         </li>`).join(''));
 }
 
-$.getJSON(bucket+'fullindex.json', function(index) {
+$.getJSON(bucket+version+'/fullindex.json', function(index) {
     database = new Map(Object.entries(index));
     fuse.setCollection(Array.from(database.keys()));
     if (urlParams.has("q")) {
