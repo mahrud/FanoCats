@@ -134,6 +134,8 @@ var urlParams = new URLSearchParams(window.location.search);
 function doSearch(query) {
     if (query == null) query = searchBox.val();
     if (query == "") help();
+    if (database.has(query))
+	return openNode("#" + database.get(query));
     var results = fuse.search(query);
     updateSearch(results);
     //var regex = new RegExp("<mark>(.*)</mark>", "gim");
@@ -202,6 +204,7 @@ function openNode(param) {
     var [pkgname, node, anchor] = parseKey(param);
     if (node === '') return openPackage(pkgname);
     $.getJSON(bucket+version+"/"+pkgname+'.json', function(data) {
+	if (node in data["index"]) [, node, ] = parseKey("#" + data["index"][node]);
 	var rawdoc = data["nodes"][node];
 	if (rawdoc == null) return openSearch(pkgname, node);
 	updateSidebar(data, pkgname, node);
@@ -212,7 +215,7 @@ function openNode(param) {
 	updateOutline('', '#'+pkgname+'::'+node, anchor);
 	Prism.highlightAll();
 	renderKaTeX();
-    }).fail(function() { openSearch(pkgname, node) });;
+    }).fail(function() { openSearch(pkgname, node) });
 }
 
 function openPackage(param) {
