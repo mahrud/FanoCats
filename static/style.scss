@@ -23,10 +23,19 @@ img.feature {
 .navbar {
     min-height: 2rem;
     max-width: 1800px;
-    background-color: #eee;
-    padding: 9px;
     margin: auto;
     border-radius: 3px;
+}
+
+.navbar-dark {
+    background-color: #000100 !important;
+    font-family: Monospace;
+    padding: 2px;
+}
+
+.navbar-light {
+    background-color: #eee;
+    padding: 9px;
 }
 
 @media (min-width: 769px) {
