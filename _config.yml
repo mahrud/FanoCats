@@ -6,7 +6,7 @@ description:         >- # this means to ignore newlines until "url:"
   geometry and commutative algebra.
 url:                 https://mahrud.github.io
 baseurl:             '/LearnM2' # the subpath of your site, e.g. /blog
-# gtag:                '' # Google Analytics Tag
+cf_beacon:           'd27b5f2c1f2e4ba789d97184971739e0' # Cloudflare beacon token
 
 # Color scheme. Options: red, orange, magenta, cyan, blue, brown
 color-scheme:

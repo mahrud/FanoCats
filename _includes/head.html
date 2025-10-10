@@ -78,14 +78,10 @@
     <!-- Fuse -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.js"></script>
 
-    {%- if site.gtag %}
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ site.gtag }}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', '{{ site.gtag }}');
-    </script>
+    {%- if site.cf_beacon %}
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
+      data-cf-beacon='{"token": "{{ site.cf_beacon }}"}'></script>
+    <!-- End Cloudflare Web Analytics -->
     {%- endif %}
   </head>
