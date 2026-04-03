@@ -1,29 +1,25 @@
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div class="container">
-	<a class="navbar-brand" href="{{ site.baseurl }}/">
-	  <img src="{{ site.baseurl }}/static/syzygy.jpg"
-	       title="M2 Syzygy, by Courtney Gibbons" style="width:35px; margin-right: 5px"/>
-	  <strong>{{ site.title }}</strong></a>
+    <nav class="navbar navbar-expand-lg navbar-dark fano-nav" id="menu">
+      <div class="fano-nav__inner">
+        <a class="navbar-brand fano-nav__brand" href="{{ site.baseurl }}/">
+          <img src="{{ site.baseurl }}/static/favicon.jpg" alt="{{ site.title }}" />
+          <strong>{{ site.title }}</strong>
+        </a>
 
-	<div class="collapse navbar-collapse" id="navb">
-	  <ul class="navbar-nav mr-auto">
-	    {%- assign pages_list = site.pages | sort: 'order' -%}
-	    {%- for node in pages_list -%}
-	      {%- if node.title != null and node.category == "links" -%}
-	    <li class="nav-item">
-              <a class="nav-link
-	      {%- if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}{{ node.url }}">{{ node.title }}</a>
-	    </li>
-	      {%- endif -%}
-	    {%- endfor %}
-	    <li class="nav-item">
-              <a class="nav-link" href="https://github.com/Macaulay2/M2/wiki">Wiki</a>
-	    </li>
-	  </ul>
-	</div>
+        <button class="navbar-toggler fano-nav__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#navb" aria-controls="navb" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-	<button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navb">
-	  <span class="navbar-toggler-icon"></span>
-	</button>
+        <div class="collapse navbar-collapse" id="navb">
+          <ul class="navbar-nav mx-auto fano-nav__links">
+            {%- assign pages_list = site.pages | sort: 'order' -%}
+            {%- for node in pages_list -%}
+              {%- if node.title != null and node.category == "links" -%}
+            <li class="nav-item">
+              <a class="nav-link{% if page.url == node.url %} active{% endif %}" href="{{ site.baseurl }}{{ node.url }}">{{ node.title }}</a>
+            </li>
+              {%- endif -%}
+            {%- endfor %}
+          </ul>
+        </div>
       </div>
     </nav>

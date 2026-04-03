@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2019 Mahrud Sayrafi
+Copyright (c) 2026 Mahrud Sayrafi
 Copyright (c) 2016 Alex Gil
 Copyright (c) 2014 Mark Otto
 

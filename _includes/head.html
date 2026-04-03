@@ -16,23 +16,6 @@
 
     <title>{% if page.title == "Home" %}{{ site.title }}{% else %}{{ page.title }}{% endif %}</title>
 
-{%- if page.layout == "post" %}
-    <!-- Dublin Core metadata for Zotero -->
-    <meta name="DC.title"   content="{{ page.title }}" />
-    <meta name="DC.creator" content="{{ page.author }}" />
-    <meta name="DC.date"    content="{{ page.publication-date }}" />
-    <meta name="DC.source"  content="{{ site.title }}" />
-    <!-- Open Graph metadata -->
-    <meta property="og:type"           content="article" />
-    <meta property="og:title"          content="{{ page.title }}" />
-    <meta property="og:article:author" content="{{ page.author }}" />
-    <meta property="og:description"    content="{{ site.description }}" />
-    <meta property="og:url"            content="{{ site.url }}{{ site.baseurl }}{{ page.url }}" />
-    <meta property="og:image"          content="{{ site.url }}{{ site.baseurl }}/static/open-graph-logo.png" />
-    <meta property="og:image:width"    content="200" />
-    <meta property="og:image:height"   content="200" />
-{%- endif %}
-
     <!-- KaTeX -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css"
       integrity="sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib" crossorigin="anonymous"/>
@@ -48,6 +31,7 @@
       var macros = {
           "\\PP": "\\mathbb{P}", "\\AA": "\\mathbb{A}", "\\NN": "\\mathbb{N}", "\\ZZ": "\\mathbb{Z}",
           "\\kk": "\\mathbb{k}", "\\QQ": "\\mathbb{Q}", "\\RR": "\\mathbb{R}", "\\CC": "\\mathbb{C}",
+          "\\OO": "\\mathcal{O}",
       }, ignoredTags = [
 	  "kbd", "var", "samp", "script", "noscript", "style", "textarea", "pre", "code", "option"
       ], delimiters = [{ left: "$", right: "$", display: false }];
@@ -62,21 +46,28 @@
     </script>
 
     <!-- Prism -->
-    <link href="{{ site.baseurl }}/static/prism.css" rel="stylesheet" type="text/css" />
-    <script src="{{ site.baseurl }}/static/prism-macaulay2.js"></script>
+    <!-- <link href="{{ site.baseurl }}/static/prism.css" rel="stylesheet" type="text/css" /> -->
+    <!-- <script src="{{ site.baseurl }}/static/prism-macaulay2.js"></script> -->
 
     <!-- Handlebars -->
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
 
     <!-- jQuery -->
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js"
-      integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.7/dist/jquery.min.js" -->
+    <!--   integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> -->
 
     <!-- Anchor -->
     <script src="https://cdn.jsdelivr.net/npm/anchor-js/anchor.min.js"></script>
+    <script>;
+      document.addEventListener("DOMContentLoaded", function(event) { anchors.add(); });
+    </script>
 
     <!-- Fuse -->
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.js"></script> -->
+
+    <!-- tablesort -->
+    <script src="https://cdn.jsdelivr.net/npm/tablesort@5.7/dist/tablesort.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tablesort@5.7/dist/sorts/tablesort.number.min.js"></script>
 
     {%- if site.cf_beacon %}
     <!-- Cloudflare Web Analytics -->

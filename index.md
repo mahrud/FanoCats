@@ -1,194 +1,89 @@
 ---
 layout: page
-title: Learn Macaulay2
+title: FanoCats
+fanos: [0,1,5,18,124,866,7622]
+rhos:
+  1: [0,1]
+  2: [0,1,2,1,1]
+  3: [0,1,4,7,4,2]
+  4: [0,1,9,28,47,27,10,1,1]
+  5: [0,1,15,91,268,312,137,35,5,2]
+  6: [0,1,26,257,1318,2807,2204,771,186,39,11,1,1]
 ---
 
 {::options parse_block_html="true" /}
 
-[_Macaulay2_](https://macaulay2.com/) is an interpreted, dynamically typed programming language intended to support research and experiments in [algebraic geometry] and [commutative algebra] through open sourced software.
+This website, inspired by Pieter Belmans' [Fanography](https://www.fanography.info), is a tool for visually studying the derived categories of smooth fano toric varieties.
 
-{% comment %}
-**Interested in contributing?** [Get in touch!](mailto:mahrud@fields.utoronto.ca)
-{: style="background-color: #fef5c4; border-left: 8px solid #FADF98; padding: 10px 30px;"}
-{% endcomment %}
+In each row, the first three columns denote the dimension and index of the variety in Macaulay2's database, accessible using [`smoothFanoToricVariety(d,i)`](https://mahrud.github.io/LearnM2/help/#NormalToricVarieties::smoothFanoToricVariety(ZZ,ZZ)), followed by the ranks of the Picard group (= #rays - dim) and Grothendieck group (= #maximal cones).
 
-[algebraic geometry]: https://en.wikipedia.org/wiki/Algebraic_geometry
-[commutative algebra]: https://en.wikipedia.org/wiki/Commutative_algebra
+Next, the columns of the $\Theta$-collection are the degrees of line bundles in the Bondal-Thomsen collection (in the default basis for the Picard group chosen by Macaulay2), which form a full generating set for the derived category. The significance of this collection lies in the fact that it is also a full generating set for the derived category of any other toric variety with the same set of rays.
 
----
+The Ext tables encapsulate the rank of Ext groups among the $\Theta$-collection: the $ij$-entry is a Laurent polynomial $\sum \operatorname{rk}\mathrm{Ext}^k(\OO(d_i),\OO(d_j)) \cdot T^k$. In this notation, the collection is exceptional if the table is upper triangular with ones on the diagonal, and it is strong if all entries are constant.
 
-#### A First Example
-{:.label}
+For instance, for all but two threefolds, $(3,1)$ and $(3,10)$, the $\Theta$-collection is already a full strong exceptional collection. For those two, it can be shown that simply removing the line bundle corresponding to the row with higher extensions yields a full strong exceptional collection.
 
-<div class="row">
- <div class="col-lg-12 col-md-12">
-  Here is an example of how to compute the minimal free resolution of the [_twisted cubic_](examples/twisted-cubic):
- </div><div class="col-md-6">
-#### Code:
-```
-R = QQ[x, y, z, w]; -- defines a ring
-I = monomialCurveIdeal(R, {1, 2, 3})
-C = res I -- computes the resolution
-betti I -- displays the Betti table
-```
-<br />
+### Future goals:
+- add descriptions and symbolic identifiers (e.g. $\mathrm{Bl}_1\PP^2$ or $\PP(\OO_{\PP^1}\oplus\OO_{\PP^1}(1))$).
+- add primitive collections, chamber decomposition, and visualize the secondary fan relationships
+- mention mutations that yield exceptional collections
+- add dim 4,5,6 data? (~70MB total)
+- link to the corresponding entries in:
+  - the Fanography database at <https://www.fanography.info/toric>
+  - the GRDB database at <http://www.grdb.co.uk/search/toricsmooth>
+  - the FanoSearch database at <http://coates.ma.ic.ac.uk/fanosearch/?page_id=277>
+- add references and code
 
-#### Getting help:
-```
--- quick usage information
-? monomialCurveIdeal
-```
-```
--- details and examples
-help monomialCurveIdeal
-```
-```
--- documentation on the web
-viewHelp monomialCurveIdeal
-```
-```
--- documentation headlines about curves
-headlines about "curve"
-```
-<br />
-**Also try**: (either click or copy & enter in M2)
-{: style="margin-bottom: 0px"}
-- [`help "reading the documentation"`](help/#Macaulay2Doc::reading the documentation)
-- [`help "getting help or reporting bugs"`](help/#Macaulay2Doc::getting help or reporting bugs)
-- [`help "Tutorial: Modules in Macaulay2"`](help/#Macaulay2Doc::Tutorial: Modules in Macaulay2)
-- [`help "computing Groebner bases"`](help/#Macaulay2Doc::computing Groebner bases)
+Please get in touch with me if you'd like to use the Macaulay2 package used for these computations. \\
+Bug reports and contributions are welcome on [GitHub](https://github.com/mahrud/FanoCats/).
 
- </div>
- <div class="col-md-6">
-#### Result:
-{% M2 index %}
-R = QQ[x, y, z, w];
-I = monomialCurveIdeal(R, {1, 2, 3})
-C = res I
-betti C
-{% endM2 %}
- </div>
-</div>
+## Smooth Fano Toric Surfaces
+{% include table.toric.html dimension=2 fanos=site.data.toric-2 %}
 
-<div class="row">
- <div class="col-12" style="text-align: center">
-  <a class="btn btn-sm btn-outline-primary" href="download">Download Macaulay2</a>
-  <a class="btn btn-sm btn-outline-primary" href="https://www.unimelb-macaulay2.cloud.edu.au">Try M2 in a Browser</a>
- </div>
-</div>
+## Smooth Fano Toric Threefolds
+{% include table.toric.html dimension=3 fanos=site.data.toric-3 %}
 
----
+## Smooth Fano Toric 4,5,6-folds
+The are respectively 124, 866, and 7622 smooth fano toric varieties in dimensions 4, 5, and 6,
+thus they are further broken up by Picard rank.
 
-<div class="row justify-content-around">
- <div class="col-auto feature">
-  <h4>Learn by Reading</h4>
-  - [Getting Started](help/#Macaulay2Doc::Macaulay2Doc#getting-started)
-  - [Computations Book](book)
-  {% comment %}
-  - [Cheat Sheet](cheatsheet)
-  - [Beginning Macaulay2](packages/#BeginningMacaulay2)
-  {% endcomment %}
- </div>
+**Note: this data is computed, but not yet available online, so the links don't work yet.**
 
- <div class="col-auto feature">
-  <h4>Learn by Writing</h4>
-  - [A first Macaulay2 session](help/#Macaulay2Doc::Macaulay2Doc#a first Macaulay2 session)
-  - [Project Ideas](https://github.com/Macaulay2/M2/wiki/Projects)
-  {% comment %}
-  - [Editors and Workflows](examples)
-  {% endcomment %}
- </div>
+<style>
+.pad7 {
+  display: inline-block;
+  width: 7ch;      /* max length */
+  text-align: left;
+}
+</style>
 
- <div class="col-auto feature">
-  <h4>Package Development</h4>
-  - [M2 Style Guide](https://github.com/Macaulay2/M2/wiki/Package-Writing-Style-Guide)
-  - [Package directory](packages)
- </div>
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th scope="col" data-sort-method="number">$\dim$</th>
+      <th scope="col" colspan="12">$\operatorname{rk} \mathrm{Pic}$</th>
+    </tr>
+  </thead>
 
- <div class="col-auto feature">
-  <h4>Documentation</h4>
-  - [Language Reference](help/#Macaulay2Doc::The Macaulay2 language)
-  - [Internal Notes](https://github.com/Macaulay2/M2/wiki/Internals%3A-Meeting-Notes)
-  - [Source Code](https://github.com/Macaulay2/M2)
- </div>
-
- <div class="col-auto feature">
-  <h4>M2 for Research</h4>
-  - [JSAG](https://msp.org/jsag/about/journal/about.html)
-  {% comment %}
-  - [Citing Macaulay2](citing)
-  - [Books and Articles](https://faculty.math.illinois.edu/Macaulay2/Publications)
-  {% endcomment %}
- </div>
-
- <div class="col-auto feature">
-  <h4>Events & Community</h4>
-  - [Workshops](events)
-  - [Slack Workspace](https://m2internals.slack.com/)
-  - [Google Groups](https://groups.google.com/group/macaulay2)
- </div>
-</div>
-
----
-
-<div class="row justify-content-around align-items-center">
- <div class="col-2 feature">
-   [![](https://www.gnu.org/software/emacs/images/emacs.png){:.feature}](https://www.gnu.org/software/emacs/)
- </div>
-
- <div class="col feature">
-  The recommended IDE for using Macaulay2 in research is [Emacs](editors). \\
-  Community plugins are also available for
-  [Vim](https://github.com/Macaulay2/M2/tree/master/M2/Macaulay2/editors/vim),
-  [Atom](https://github.com/Macaulay2/language-macaulay2),
-  [VSCode](https://github.com/coreysharris/vscode-macaulay2), and
-  [Sublime](https://github.com/Macaulay2/M2/wiki/Using-Macaulay2-with-Sublime).
-  
-  Here are some screenshots of Macaulay2's interface in Emacs:
- </div>
-</div>
-
-<div class="row">
-{%- for i in (0..3) -%}
-{%- assign screenshot = site.baseurl | append: "/static/emacs" | append: i | append: ".png" -%}
- <div class="col-3 feature">
-  [![]({{ screenshot }}){:.feature}]({{ screenshot }})
- </div>
-{%- endfor -%}
-</div>
-
----
-
-{% comment %}
-<div class="row justify-content-around align-items-center">
- <div class="col feature">
-  Development of Macaulay2 by [Daniel R. Grayson](https://faculty.math.illinois.edu/~dan/)
-  and [Michael E. Stillman](https://math.cornell.edu/michael-e-stillman) has been funded
-  by the National Science Foundation since 1992. We also acknowledge our many
-  [contributors](contribute), [software libraries] used by Macaulay2,
-  as well as [Macaulay](https://www.math.columbia.edu/~bayer/Macaulay/),
-  the predecessor of Macaulay2 written by Dave Bayer and Michael Stillman. \\
-  The namesake of Macaulay2 is [Francis Macaulay FRS](https://en.wikipedia.org/wiki/Francis_Sowerby_Macaulay).
- </div>
-
- <div class="col-2 feature">
-  [![]({{ site.url }}{{ site.baseurl }}/static/NSF.jpg){:.feature}](https://www.nsf.gov/)
- </div>
-</div>
-
-[software libraries]: {{site.baseurl }}/packages/#Macaulay2Doc::Copyright and license
-
-<!--
-<div class="row justify-content-around align-items-center">
- <div class="col feature">
- - A random paper referring to Macaulay2: <script type="text/javascript">citation();</script>
- - A random Macaulay2 package: <script type="text/javascript">documentation();</script>
- </div>
-</div>
--->
-{% endcomment %}
+  <tbody>
+    {% for dim in (2..6) %}
+    <tr>
+      <td class="align-middle dim">${{ dim }}$ ({{ page.fanos[dim] }})</td>
+      <td class="align-middle">
+		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-2">
+		  ≤2 (1+{{ page.rhos[dim][2] }})</a> &ensp; &ensp;
+	    {% assign max = page.rhos[dim] | size | minus: 1 %}
+		{% for rho in (3..max) %}
+		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-{{ rho }}">
+		  {{ rho }} ({{ page.rhos[dim][rho] }})</a> &ensp;
+		{% endfor %}
+	  </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 <footer>
-  This website, Learn**M2**, is a personal project of [Mahrud Sayrafi](https://mahrud.github.io/). \\
-  Bug reports and contributions are welcome on [GitHub](https://github.com/mahrud/LearnM2/).
+  This website, FanoCats, is a personal project of [Mahrud Sayrafi](https://mahrud.github.io/). \\
+  Bug reports and contributions are welcome on [GitHub](https://github.com/mahrud/FanoCats/).
 </footer>

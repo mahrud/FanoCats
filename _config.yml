@@ -1,12 +1,11 @@
 # Setup
-title:               Learn Macaulay2
-tagline:             a Software System for Research in Algebraic Geometry
+title:               FanoCats
+tagline:             (Toric) Fano Categories Database
 description:         >- # this means to ignore newlines until "url:"
-  Macaulay2 is a software system devoted to supporting research in algebraic
-  geometry and commutative algebra.
+  A database of derived categories of smooth fano toric varieties.
 url:                 https://mahrud.github.io
-baseurl:             '/LearnM2' # the subpath of your site, e.g. /blog
-cf_beacon:           'd27b5f2c1f2e4ba789d97184971739e0' # Cloudflare beacon token
+baseurl:             '/FanoCats' # the subpath of your site, e.g. /blog
+cf_beacon:           '' # Cloudflare beacon token
 
 # Color scheme. Options: red, orange, magenta, cyan, blue, brown
 color-scheme:
@@ -19,11 +18,9 @@ permalink: /:title/
 encoding: utf-8
 
 # Collections for entries
-collections:
-  examples:
-    output: true
-  packages:
-    output: true
+# collections:
+#   varieties:
+#     output: true
 
 # Markdown specs
 markdown: kramdown
@@ -50,7 +47,6 @@ exclude:
   - proof.gemspec
   - Makefile
   - _cache
-  - generate-json.m2
 
 # Theme
 remote_theme: "mahrud/proof"

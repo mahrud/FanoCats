@@ -1,0 +1,35 @@
+{% assign dim = include.dimension %}
+
+There are {{ include.fanos.size() }} varieties in this class:
+
+<table class="table table-hover" id="table-toric-{{ dim }}">
+  <thead>
+    <tr>
+      <th scope="col" class="text-center">$(\dim,\#)$</th>
+      <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} \mathrm{Pic}$</th>
+      <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} K_0$</th>
+      <th scope="col">$\Theta$-collection</th>
+      <th scope="col">Ext table</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for fano in include.fanos %}
+    <tr>
+      <td class="align-middle row-identifier text-center">
+	<a class="identifier text-nowrap" data-sort="{{ "%03d%03d" | format(dim, fano.index) }}"
+	   href="{{ site.baseurl }}/toric-{{ dim }}-{{ fano.index }}">$({{ dim }},{{ fano.index }})$</a></td>
+      <td class="align-middle rkPic text-center">{{ fano.rkPic }}</td>
+      <td class="align-middle rkK0  text-center">{{ fano.rkK0 }}</td>
+      <td class="align-middle Zonotope" data-sort="{{ fano.numZ }}" style="white-space: nowrap;">
+	${{ fano.numZ }}:{{ fano.Zonotope | latex_matrix: true }}$</td>
+      <td class="align-middle ExtTable" data-sort="{{ fano.isExc }}">
+	${{ fano.ExtTable | latex_matrix: false }}$</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<script type="text/javascript">
+  new Tablesort(document.getElementById("table-toric-{{ dim }}"));
+</script>

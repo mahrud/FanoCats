@@ -1,6 +1,6 @@
 all:	serve
 
-check:; bundle exec jekyll build -d _site/LearnM2
+check:; bundle exec jekyll build -d _site/FanoCats
 	bundle exec htmlproofer ./_site
 
 serve:;	bundle exec jekyll serve -s . -d _site/
