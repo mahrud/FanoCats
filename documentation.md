@@ -1,6 +1,0 @@
----
-layout: help
-title: Documentation
----
-
-<script>help("Macaulay2Doc::Macaulay2Doc")</script>
