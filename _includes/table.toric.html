@@ -1,6 +1,7 @@
 {% assign dim = include.dimension %}
+{% assign fanos = include.fanos | where_exp: "fano", "fano != empty and fano.index != blank" %}
 
-There are {{ include.fanos.size() }} varieties in this class:
+There are {{ fanos.size }} varieties in this class:
 
 <table class="table table-hover" id="table-toric-{{ dim }}">
   <thead>
@@ -10,11 +11,12 @@ There are {{ include.fanos.size() }} varieties in this class:
       <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} K_0$</th>
       <th scope="col">$\Theta$-collection</th>
       <th scope="col">Ext table</th>
+      <th scope="col">Chambers</th>
     </tr>
   </thead>
 
   <tbody>
-    {% for fano in include.fanos %}
+    {% for fano in fanos %}
     <tr>
       <td class="align-middle row-identifier text-center">
 	<a class="identifier text-nowrap" data-sort="{{ "%03d%03d" | format(dim, fano.index) }}"
@@ -25,6 +27,7 @@ There are {{ include.fanos.size() }} varieties in this class:
 	${{ fano.numZ }}:{{ fano.Zonotope | latex_matrix: true }}$</td>
       <td class="align-middle ExtTable" data-sort="{{ fano.isExc }}">
 	${{ fano.ExtTable | latex_matrix: false }}$</td>
+      <td class="align-middle Chambers" data-chambers="{{ fano.Chambers | escape }}"></td>
     </tr>
     {% endfor %}
   </tbody>
@@ -33,3 +36,4 @@ There are {{ include.fanos.size() }} varieties in this class:
 <script type="text/javascript">
   new Tablesort(document.getElementById("table-toric-{{ dim }}"));
 </script>
+<script src="{{ site.baseurl }}/static/chambers.js"></script>

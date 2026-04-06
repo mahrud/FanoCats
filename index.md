@@ -27,6 +27,8 @@ For instance, for all but two threefolds, $(3,1)$ and $(3,10)$, the $\Theta$-col
 - add descriptions and symbolic identifiers (e.g. $\mathrm{Bl}_1\PP^2$ or $\PP(\OO_{\PP^1}\oplus\OO_{\PP^1}(1))$).
 - add primitive collections, chamber decomposition, and visualize the secondary fan relationships
 - mention mutations that yield exceptional collections
+- for dim<=3, visualize the fan?
+- for rho<=3, visualize (a section of) the secondary fan?
 - add dim 4,5,6 data? (~70MB total)
 - link to the corresponding entries in:
   - the Fanography database at <https://www.fanography.info/toric>
@@ -47,7 +49,7 @@ Bug reports and contributions are welcome on [GitHub](https://github.com/mahrud/
 The are respectively 124, 866, and 7622 smooth fano toric varieties in dimensions 4, 5, and 6,
 thus they are further broken up by Picard rank.
 
-**Note: this data is computed, but not yet available online, so the links don't work yet.**
+**Note: this data is computed, but only available online in Picard rank $\leq3$, so some links don't work yet.**
 
 <style>
 .pad7 {
@@ -70,11 +72,13 @@ thus they are further broken up by Picard rank.
     <tr>
       <td class="align-middle dim">${{ dim }}$ ({{ page.fanos[dim] }})</td>
       <td class="align-middle">
-		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-2">
+		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-2"
+		  {% if dim < 4 or rho > 3 %}style="color: gray"{% endif %}>
 		  ≤2 (1+{{ page.rhos[dim][2] }})</a> &ensp; &ensp;
 	    {% assign max = page.rhos[dim] | size | minus: 1 %}
 		{% for rho in (3..max) %}
-		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-{{ rho }}">
+		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-{{ rho }}"
+		  {% if dim < 4 or rho > 3 %}style="color: gray"{% endif %}>
 		  {{ rho }} ({{ page.rhos[dim][rho] }})</a> &ensp;
 		{% endfor %}
 	  </td>
