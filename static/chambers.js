@@ -205,6 +205,11 @@
   function parseChambers(text) {
     var jsonish = text.replace(/\{/g, "[").replace(/\}/g, "]").replace(/\(/g, "[").replace(/\)/g, "]");
     var parsed = JSON.parse(jsonish);
+    if (Number.isInteger(parsed)) {
+      return {
+        count: parsed,
+      };
+    }
     if (!Array.isArray(parsed) || parsed.length !== 3) {
       throw new Error("Chambers data must have the form (rays, cones, vector).");
     }
@@ -379,6 +384,10 @@
     cells.forEach(function (cell) {
       try {
         var payload = parseChambers(cell.getAttribute("data-chambers"));
+        if (Number.isInteger(payload.count)) {
+          cell.textContent = payload.count + " chambers";
+          return;
+        }
         validateRays(payload.rays, payload.cones);
         validateCones(payload.cones, payload.rays.length);
         if (payload.rays[0].length === 3) {
