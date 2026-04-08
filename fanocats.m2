@@ -26,6 +26,10 @@ storeFanoCatData(List, String) := (L, name) -> (
 	    L := fanoZonotopeDegrees(d,i);
 	    E := ExtTables#(d,i);
 	    F := secondaryFan X;
+	    -- TODO: find a cleaner way to find the nef cone
+	    -- as a maximal cone of the secondary fan
+	    C := apply(cols nefGenerators X,
+		ray -> position(cols rays F, ray' -> ray == ray'));
 	    "rho" => r,
 	    "rays" => #rays X,
 	    "cones" => #max X,
@@ -34,7 +38,7 @@ storeFanoCatData(List, String) := (L, name) -> (
 	    "Ext"   => [toExternalString entries E, isExceptional E],
 	    "chambers" => if r > 3 then #maxCones F else toExternalString(
 		-- TODO: rays in the secondary fan and degs are redundant
-		 entries transpose rays F, maxCones F,
+		 entries transpose rays F, unique prepend_C maxCones F,
 		 flatten entries interiorVector dualCone coneFromVData rays F)
 	    });
     (datadir | name) << json(h1, Indent => 2) << close)
@@ -45,3 +49,5 @@ needs "fanocats.m2"
 
 apply(tables, loadFanoDB)
 apply(tables, storeFanoCatData)
+
+primitiveCollections fano(2,3)

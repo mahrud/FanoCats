@@ -1,7 +1,18 @@
 (function () {
   "use strict";
 
-  var coneColors = ["#db5e57", "#488ac2", "#63ab6b", "#dfa03d", "#8e69b5"];
+  var coneColors = [
+    "#488ac2",
+    "#db5e57",
+    "#63ab6b",
+    "#dfa03d",
+    "#8e69b5",
+    "#2f7f7f",
+    "#c06c84",
+    "#7a9e3a",
+    "#c47f2c",
+    "#5b6ec7"
+  ];
 
   function dot(a, b) {
     return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
