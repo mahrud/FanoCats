@@ -69,16 +69,15 @@ thus they are further broken up by Picard rank.
 
   <tbody>
     {% for dim in (2..6) %}
+	{% assign max = page.rhos[dim] | size | minus: 1 %}
     <tr>
       <td class="align-middle dim">${{ dim }}$ ({{ page.fanos[dim] }})</td>
       <td class="align-middle">
-		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-2"
-		  {% if dim < 4 or rho > 3 %}style="color: gray"{% endif %}>
+		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-{% if dim < 4 %}all{% else %}2{% endif %}">
 		  ≤2 (1+{{ page.rhos[dim][2] }})</a> &ensp; &ensp;
-	    {% assign max = page.rhos[dim] | size | minus: 1 %}
 		{% for rho in (3..max) %}
-		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-{{ rho }}"
-		  {% if dim < 4 or rho > 3 %}style="color: gray"{% endif %}>
+		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-{% if dim < 4 %}all{% else %}{{ rho }}{% endif %}"
+		  {% if dim > 3 and rho > 3 %}style="color: gray"{% endif %}>
 		  {{ rho }} ({{ page.rhos[dim][rho] }})</a> &ensp;
 		{% endfor %}
 	  </td>
