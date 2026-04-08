@@ -1,0 +1,13 @@
+td.Chambers {
+  text-align: center;
+}
+
+td.Chambers svg.chambers-svg {
+  display: block;
+  width: auto;
+  min-width: 15vw;
+  max-width: min(200px, 15vw, 100%);
+  max-height: 15vw;
+  height: auto;
+  margin: 0 auto;
+}

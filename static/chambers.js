@@ -228,7 +228,7 @@
 
     if (dimension === 1) {
       cell.innerHTML = [
-        '<svg viewBox="0 0 100 40" width="100" height="40" xmlns="http://www.w3.org/2000/svg" aria-label="Chambers">',
+        '<svg class="chambers-svg" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" aria-label="Chambers">',
         '<line x1="10" y1="22" x2="90" y2="22" stroke="#111" stroke-width="1.5" />',
         '<circle cx="10" cy="22" r="2.3" fill="#111" />',
         '<circle cx="90" cy="22" r="2.3" fill="#111" />',
@@ -348,7 +348,7 @@
     }
 
     var svgParts = [];
-    svgParts.push('<svg viewBox="0 0 ' + widthPx + " " + heightPx + '" width="' + widthPx + '" height="' + heightPx + '" xmlns="http://www.w3.org/2000/svg" aria-label="Chambers">');
+    svgParts.push('<svg class="chambers-svg" viewBox="0 0 ' + widthPx + " " + heightPx + '" xmlns="http://www.w3.org/2000/svg" aria-label="Chambers">');
 
     polygons.forEach(function (polygon, index) {
       var color = coneColors[index % coneColors.length];
