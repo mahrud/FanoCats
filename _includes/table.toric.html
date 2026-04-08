@@ -1,7 +1,15 @@
 {% assign dim = include.dimension %}
-{% assign fanos = include.fanos | where_exp: "fano", "fano != empty and fano.index != blank" %}
+{% assign fanos = include.fanos %}
 
 There are {{ fanos.size }} varieties in this class:
+
+<style>
+.pad3 {
+  display: inline-block;
+  width: 3ch; /* max length */
+  text-align: right;
+}
+</style>
 
 <table class="table table-hover" id="table-toric-{{ dim }}">
   <thead>
@@ -9,9 +17,9 @@ There are {{ fanos.size }} varieties in this class:
       <th scope="col" class="text-center">$(\dim,\#)$</th>
       <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} \mathrm{Pic}$</th>
       <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} K_0$</th>
-      <th scope="col">$\Theta$-collection</th>
-      <th scope="col">Ext table</th>
       <th scope="col">Chambers</th>
+      <th scope="col">Cox degrees and $\Theta$-collection</th>
+      <th scope="col">Ext table</th>
     </tr>
   </thead>
 
@@ -19,15 +27,16 @@ There are {{ fanos.size }} varieties in this class:
     {% for fano in fanos %}
     <tr>
       <td class="align-middle row-identifier text-center">
-	<a class="identifier text-nowrap" data-sort="{{ "%03d%03d" | format(dim, fano.index) }}"
-	   href="{{ site.baseurl }}/toric-{{ dim }}-{{ fano.index }}">$({{ dim }},{{ fano.index }})$</a></td>
-      <td class="align-middle rkPic text-center">{{ fano.rkPic }}</td>
-      <td class="align-middle rkK0  text-center">{{ fano.rkK0 }}</td>
-      <td class="align-middle Zonotope" data-sort="{{ fano.numZ }}" style="white-space: nowrap;">
-	${{ fano.numZ }}:{{ fano.Zonotope | latex_matrix: true }}$</td>
-      <td class="align-middle ExtTable" data-sort="{{ fano.isExc }}">
-	${{ fano.ExtTable | latex_matrix: false }}$</td>
-      <td class="align-middle Chambers" data-chambers="{{ fano.Chambers | escape }}"></td>
+	<a class="identifier text-nowrap" data-sort="{{ "%03d%03d" | format(dim, fano[0]) }}"
+	   href="{{ site.baseurl }}/toric-{{ dim }}-{{ fano.index }}">$({{ dim }},{{ fano[0] }})$</a></td>
+      <td class="align-middle rkPic text-center">{{ fano[1].rho }}</td>
+      <td class="align-middle rkK0  text-center">{{ fano[1].cones }}</td>
+      <td class="align-middle Chambers" data-chambers="{{ fano[1].chambers | escape }}"></td>
+      <td class="align-middle Zonotope" data-sort="{{ fano[1].theta[1] }}" style="white-space: nowrap;">
+	<span class="pad3">{{ fano[1].rays }}:</span>     ${{ fano[1].degs     | latex_matrix: true }}$<br/>
+	<span class="pad3">{{ fano[1].theta[1] }}:</span> ${{ fano[1].theta[0] | latex_matrix: true }}$</td>
+      <td class="align-middle ExtTable" data-sort="{{ fano[1].Ext[1] }}">
+	${{ fano[1].Ext[0] | latex_matrix: false }}$</td>
     </tr>
     {% endfor %}
   </tbody>
