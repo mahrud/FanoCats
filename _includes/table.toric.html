@@ -22,6 +22,17 @@ There are {{ fanos.size }} varieties in this class:
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.row-toggle {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  padding: 0 0.35rem 0 0;
+}
+
+.row-toggle[aria-expanded="true"] {
+  transform: rotate(90deg);
+}
 </style>
 
 <div class="fano-table-wrap">
@@ -41,17 +52,25 @@ There are {{ fanos.size }} varieties in this class:
     {% for fano in fanos %}
     <tr id="({{ dim }},{{ fano[0] }})" data-anchor="({{ dim }},{{ fano[0] }})">
       <td class="align-middle row-identifier text-center">
+        <button type="button" class="row-toggle" aria-expanded="false" aria-controls="details-({{ dim }},{{ fano[0] }})">&#9656;</button>
 	<a class="identifier text-nowrap" data-sort={{ fano[0] }}
 	   href="{{ site.baseurl }}/toric-{{ dim }}-{% if dim < 4 %}all{% elsif fano[1].rho <= 2 %}2{% else %}{{ fano[1].rho }}{% endif %}/#({{ dim }},{{ fano[0] }})">
 	   $({{ dim }},{{ fano[0] }})$</a></td>
       <td class="align-middle rkPic text-center">{{ fano[1].rho }}</td>
-      <td class="align-middle rkK0  text-center">{{ fano[1].cones }}</td>
+      <td class="align-middle rkK0  text-center">{{ fano[1].cones[0] }}</td>
       <td class="align-middle Chambers" data-chambers="{{ fano[1].chambers | escape }}"></td>
-      <td class="align-middle Zonotope" data-sort="{{ fano[1].theta[1] }}" style="white-space: nowrap;">
-	<span class="pad3">{{ fano[1].rays }}:</span>     ${{ fano[1].degs     | latex_matrix: true }}$<br/>
-	<span class="pad3">{{ fano[1].theta[1] }}:</span> ${{ fano[1].theta[0] | latex_matrix: true }}$</td>
+      <td class="align-middle Zonotope" data-sort="{{ fano[1].theta[0] }}" style="white-space: nowrap;">
+	<span class="pad3">{{ fano[1].rays[0] }}:</span>     ${{ fano[1].degs     | latex_matrix: true }}$<br/>
+	<span class="pad3">{{ fano[1].theta[0] }}:</span> ${{ fano[1].theta[1] | latex_matrix: true }}$</td>
       <td class="align-middle ExtTable" data-sort="{{ fano[1].Ext[1] }}">
 	${{ fano[1].Ext[0] | latex_matrix: false }}$</td>
+    </tr>
+    <tr id="details-({{ dim }},{{ fano[0] }})" class="detail-row" style="display: none;">
+      <td colspan="6">
+        <pre>Rays:  {{ fano[1].rays[1] }}
+Cones: {{ fano[1].cones[1] }}
+Walls: {{ fano[1].primitive }}</pre>
+      </td>
     </tr>
     {% endfor %}
   </tbody>
@@ -76,7 +95,29 @@ There are {{ fanos.size }} varieties in this class:
     var focusedRow = null;
 
     function rows() {
-      return Array.prototype.slice.call(tbody.rows);
+      return Array.prototype.slice.call(tbody.querySelectorAll("tr[data-anchor]"));
+    }
+
+    function detailRow(row) {
+      return row ? document.getElementById("details-" + row.id) : null;
+    }
+
+    function toggleButton(row) {
+      return row && row.querySelector(".row-toggle");
+    }
+
+    function isExpanded(row) {
+      var button = toggleButton(row);
+      return button && button.getAttribute("aria-expanded") === "true";
+    }
+
+    function setExpanded(row, expanded) {
+      var details = detailRow(row);
+      var button = toggleButton(row);
+      var visible = expanded && row.style.display !== "none";
+
+      if (details) details.style.display = visible ? "" : "none";
+      if (button) button.setAttribute("aria-expanded", expanded ? "true" : "false");
     }
 
     function totalPages() {
@@ -105,6 +146,7 @@ There are {{ fanos.size }} varieties in this class:
       first = (currentPage - 1) * rowsPerPage;
       allRows.forEach(function(row, index) {
         row.style.display = index >= first && index < first + rowsPerPage ? "" : "none";
+        setExpanded(row, isExpanded(row));
       });
       pageLabel.textContent = "Page " + currentPage + " of " + pageCount;
       prevButton.disabled = currentPage === 1;
@@ -125,6 +167,7 @@ There are {{ fanos.size }} varieties in this class:
 
       rows().forEach(function(candidate) {
         candidate.style.display = candidate === focusedRow ? "" : "none";
+        setExpanded(candidate, candidate === focusedRow);
       });
       pageLabel.textContent = "";
       prevButton.disabled = true;
@@ -148,6 +191,11 @@ There are {{ fanos.size }} varieties in this class:
     });
     prevButton.addEventListener("click", function() { changePage(-1); });
     nextButton.addEventListener("click", function() { changePage(1); });
+    rows().forEach(function(row) {
+      toggleButton(row).addEventListener("click", function() {
+        setExpanded(row, !isExpanded(row));
+      });
+    });
     table.addEventListener("afterSort", function() {
       if (!renderFocusedRow()) render(currentPage, false);
     });

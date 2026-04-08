@@ -25,11 +25,10 @@ For instance, for all but two threefolds, $(3,1)$ and $(3,10)$, the $\Theta$-col
 
 ### Future goals:
 - add descriptions and symbolic identifiers (e.g. $\mathrm{Bl}_1\PP^2$ or $\PP(\OO_{\PP^1}\oplus\OO_{\PP^1}(1))$).
-- add primitive collections, chamber decomposition, and visualize the secondary fan relationships
+- linkify the secondary fan relationships
 - mention mutations that yield exceptional collections
 - for dim<=3, visualize the fan?
-- for rho<=3, visualize (a section of) the secondary fan?
-- add dim 4,5,6 data? (~70MB total)
+- add dim 4,5,6 rho>3 data? (~70MB total)
 - link to the corresponding entries in:
   - the Fanography database at <https://www.fanography.info/toric>
   - the GRDB database at <http://www.grdb.co.uk/search/toricsmooth>
