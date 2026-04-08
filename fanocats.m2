@@ -5,7 +5,7 @@ tables = {
     2, 3,
     (4,2), (4,3),
     (5,2), (5,3),
-    (6,2) -- (6,3)
+    (6,2), (6,3)
     }
 
 datadir = "~/Projects/M2/fano/_data/"
@@ -19,7 +19,7 @@ storeFanoCatData(ZZ, ZZ) := (d0, r0) -> (
 	and if r0 == 2 then fanoPicardRank(d,i) <= r0 else fanoPicardRank(d,i) == r0);
     storeFanoCatData(keys h0, "toric-" | d0 | "-" | r0 | ".json"))
 storeFanoCatData(List, String) := (L, name) -> (
-    h1 := hashTable apply(L, (d,i) ->
+    h1 := hashTable apply(sort L, (d,i) ->
 	i => hashTable splice {
 	    X := fano(d,i);
 	    r := fanoPicardRank(d,i);
@@ -41,7 +41,7 @@ storeFanoCatData(List, String) := (L, name) -> (
 		 entries transpose rays F, unique prepend_C maxCones F,
 		 flatten entries interiorVector dualCone coneFromVData rays F)
 	    });
-    (datadir | name) << json(h1, Indent => 2) << close)
+    (datadir | name) << json(h1, Indent => 2, Sort => true) << close)
 
 end--
 restart
