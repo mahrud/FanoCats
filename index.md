@@ -17,7 +17,9 @@ This website, inspired by Pieter Belmans' [Fanography](https://www.fanography.in
 
 In each row, the first three columns denote the dimension and index of the variety in Macaulay2's database, accessible using [`smoothFanoToricVariety(d,i)`](https://mahrud.github.io/LearnM2/help/#NormalToricVarieties::smoothFanoToricVariety(ZZ,ZZ)), followed by the ranks of the Picard group (= #rays - dim) and Grothendieck group (= #maximal cones).
 
-Next, the columns of the $\Theta$-collection are the degrees of line bundles in the Bondal-Thomsen collection (in the default basis for the Picard group chosen by Macaulay2), which form a full generating set for the derived category. The significance of this collection lies in the fact that it is also a full generating set for the derived category of any other toric variety with the same set of rays.
+Next, the if the Picard rank is at most 3, the secondary fan of the toric variety is displayed, with the nef chamber colored in blue. Note that for Picard rank 3, the picture is really a 2D section of the 3D fan. If you click on the black triangle to the left of the row, you can also see the ray generators, maximal cones, and primitive collections of the variety.
+
+Next, the degrees of the variables in the Cox ring and degrees of the line bundles in the Bondal-Thomsen collection are displayed as columns of matrices (in the default basis for the Picard group chosen by Macaulay2). Then $\Theta$-collection is of interest because it forms a full generating set for the derived category, and in particular it is also a full generating set for the derived category of any other toric variety with the same set of rays.
 
 The Ext tables encapsulate the rank of Ext groups among the $\Theta$-collection: the $ij$-entry is a Laurent polynomial $\sum \operatorname{rk}\mathrm{Ext}^k(\OO(d_i),\OO(d_j)) \cdot T^k$. In this notation, the collection is exceptional if the table is upper triangular with ones on the diagonal, and it is strong if all entries are constant.
 
@@ -34,6 +36,10 @@ For instance, for all but two threefolds, $(3,1)$ and $(3,10)$, the $\Theta$-col
   - the GRDB database at <http://www.grdb.co.uk/search/toricsmooth>
   - the FanoSearch database at <http://coates.ma.ic.ac.uk/fanosearch/?page_id=277>
 - add references and code
+- add other toric varieties of interest:
+  - a page with a few different Hirzebruchs
+  - a page for a few Kleinschmidt varieties
+  - a page for some non-smooth or non-projectively normal ones
 
 Please get in touch with me if you'd like to use the Macaulay2 package used for these computations. \\
 Bug reports and contributions are welcome on [GitHub](https://github.com/mahrud/FanoCats/).
