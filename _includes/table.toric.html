@@ -9,6 +9,19 @@ There are {{ fanos.size }} varieties in this class:
   width: 3ch; /* max length */
   text-align: right;
 }
+
+.fano-table-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.fano-table-pagination button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 </style>
 
 <div class="fano-table-wrap">
@@ -42,10 +55,60 @@ There are {{ fanos.size }} varieties in this class:
     {% endfor %}
   </tbody>
 </table>
+<div class="fano-table-pagination" id="table-toric-{{ dim }}-pagination">
+  <button type="button" id="table-toric-{{ dim }}-prev">Previous</button>
+  <span id="table-toric-{{ dim }}-page"></span>
+  <button type="button" id="table-toric-{{ dim }}-next">Next</button>
+</div>
 </div>
 
 <script type="text/javascript">
-  new Tablesort(document.getElementById("table-toric-{{ dim }}"));
+  (function() {
+    var rowsPerPage = 20;
+    var table = document.getElementById("table-toric-{{ dim }}");
+    var tbody = table.tBodies[0];
+    var prevButton = document.getElementById("table-toric-{{ dim }}-prev");
+    var nextButton = document.getElementById("table-toric-{{ dim }}-next");
+    var pageLabel  = document.getElementById("table-toric-{{ dim }}-page");
+    var pagination = document.getElementById("table-toric-{{ dim }}-pagination");
+    var rows = Array.prototype.slice.call(tbody.rows);
+    var currentPage = 1;
+    var totalPages = Math.max(1, Math.ceil(rows.length / rowsPerPage));
+
+    function setPageParam(page) {
+      var url = new URL(window.location.href);
+      url.searchParams.set("p", page);
+      window.history.replaceState({}, "", url);
+    }
+
+    function render(page, updateUrl) {
+      currentPage = Math.min(Math.max(page, 1), totalPages);
+      rows.forEach(function(row, index) {
+        var first = (currentPage - 1) * rowsPerPage;
+        row.style.display = index >= first && index < first + rowsPerPage ? "" : "none";
+      });
+      pageLabel.textContent = "Page " + currentPage + " of " + totalPages;
+      prevButton.disabled = currentPage === 1;
+      nextButton.disabled = currentPage === totalPages;
+      pagination.style.display = totalPages > 1 ? "flex" : "none";
+      if (updateUrl) setPageParam(currentPage);
+    }
+
+    function changePage(delta) { render(currentPage + delta, true); }
+    document.addEventListener("keydown", function(event) {
+      var target = event.target;
+      var tagName = target && target.tagName ? target.tagName.toLowerCase() : "";
+      if (target && (target.isContentEditable || /^(input|textarea|select)$/.test(tagName))) return;
+      if (event.key === "j") changePage(-1);
+      if (event.key === "l") changePage(1);
+    });
+    prevButton.addEventListener("click", function() { changePage(-1); });
+    nextButton.addEventListener("click", function() { changePage(1); });
+    table.addEventListener("afterSort", function() { render(currentPage, false); });
+
+    new Tablesort(table);
+    render(parseInt(new URLSearchParams(window.location.search).get("p"), 10) || 1, false);
+  })();
 </script>
 <link href="{{ site.baseurl }}/static/chambers.css" rel="stylesheet" />
 <script src="{{ site.baseurl }}/static/chambers.js"></script>
