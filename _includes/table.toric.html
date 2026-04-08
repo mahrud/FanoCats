@@ -31,7 +31,7 @@ There are {{ fanos.size }} varieties in this class:
       <th scope="col" class="text-center">$(\dim,\#)$</th>
       <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} \mathrm{Pic}$</th>
       <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} K_0$</th>
-      <th scope="col">Chambers</th>
+      <th scope="col" class="text-center" data-sort-method="none">Chambers</th>
       <th scope="col">Cox degrees and $\Theta$-collection</th>
       <th scope="col">Ext table</th>
     </tr>
@@ -39,10 +39,11 @@ There are {{ fanos.size }} varieties in this class:
 
   <tbody>
     {% for fano in fanos %}
-    <tr>
+    <tr id="({{ dim }},{{ fano[0] }})" data-anchor="({{ dim }},{{ fano[0] }})">
       <td class="align-middle row-identifier text-center">
-	<a class="identifier text-nowrap" data-sort="{{ "%03d%03d" | format(dim, fano[0]) }}"
-	   href="{{ site.baseurl }}/toric-{{ dim }}-{{ fano.index }}">$({{ dim }},{{ fano[0] }})$</a></td>
+	<a class="identifier text-nowrap" data-sort={{ fano[0] }}
+	   href="{{ site.baseurl }}/toric-{{ dim }}-{% if dim < 4 %}all{% elsif fano[1].rho <= 2 %}2{% else %}{{ fano[1].rho }}{% endif %}/#({{ dim }},{{ fano[0] }})">
+	   $({{ dim }},{{ fano[0] }})$</a></td>
       <td class="align-middle rkPic text-center">{{ fano[1].rho }}</td>
       <td class="align-middle rkK0  text-center">{{ fano[1].cones }}</td>
       <td class="align-middle Chambers" data-chambers="{{ fano[1].chambers | escape }}"></td>
@@ -71,30 +72,73 @@ There are {{ fanos.size }} varieties in this class:
     var nextButton = document.getElementById("table-toric-{{ dim }}-next");
     var pageLabel  = document.getElementById("table-toric-{{ dim }}-page");
     var pagination = document.getElementById("table-toric-{{ dim }}-pagination");
-    var rows = Array.prototype.slice.call(tbody.rows);
     var currentPage = 1;
-    var totalPages = Math.max(1, Math.ceil(rows.length / rowsPerPage));
+    var focusedRow = null;
+
+    function rows() {
+      return Array.prototype.slice.call(tbody.rows);
+    }
+
+    function totalPages() {
+      return Math.max(1, Math.ceil(rows().length / rowsPerPage));
+    }
+
+    function pageFromUrl() {
+      return parseInt(new URLSearchParams(window.location.search).get("p"), 10) || 1;
+    }
 
     function setPageParam(page) {
       var url = new URL(window.location.href);
-      url.searchParams.set("p", page);
+      if (totalPages() === 1 && page === 1) url.searchParams.delete("p");
+      else url.searchParams.set("p", page);
       window.history.replaceState({}, "", url);
     }
 
     function render(page, updateUrl) {
-      currentPage = Math.min(Math.max(page, 1), totalPages);
-      rows.forEach(function(row, index) {
-        var first = (currentPage - 1) * rowsPerPage;
+      if (focusedRow) return renderFocusedRow();
+
+      var allRows = rows();
+      var pageCount = totalPages();
+      var first;
+
+      currentPage = Math.min(Math.max(page, 1), pageCount);
+      first = (currentPage - 1) * rowsPerPage;
+      allRows.forEach(function(row, index) {
         row.style.display = index >= first && index < first + rowsPerPage ? "" : "none";
       });
-      pageLabel.textContent = "Page " + currentPage + " of " + totalPages;
+      pageLabel.textContent = "Page " + currentPage + " of " + pageCount;
       prevButton.disabled = currentPage === 1;
-      nextButton.disabled = currentPage === totalPages;
-      pagination.style.display = totalPages > 1 ? "flex" : "none";
+      nextButton.disabled = currentPage === pageCount;
+      pagination.style.display = pageCount > 1 ? "flex" : "none";
       if (updateUrl) setPageParam(currentPage);
     }
 
-    function changePage(delta) { render(currentPage + delta, true); }
+    function rowFromHash() {
+      var hash = decodeURIComponent(window.location.hash.slice(1));
+      return hash && rows().find(function(candidate) {
+        return candidate.id === hash || candidate.getAttribute("data-anchor") === hash;
+      });
+    }
+
+    function renderFocusedRow() {
+      if (!focusedRow) return false;
+
+      rows().forEach(function(candidate) {
+        candidate.style.display = candidate === focusedRow ? "" : "none";
+      });
+      pageLabel.textContent = "";
+      prevButton.disabled = true;
+      nextButton.disabled = true;
+      pagination.style.display = "none";
+      focusedRow.scrollIntoView();
+      return true;
+    }
+
+    function changePage(delta) {
+      if (focusedRow) return;
+      render(currentPage + delta, true);
+    }
+
     document.addEventListener("keydown", function(event) {
       var target = event.target;
       var tagName = target && target.tagName ? target.tagName.toLowerCase() : "";
@@ -104,10 +148,17 @@ There are {{ fanos.size }} varieties in this class:
     });
     prevButton.addEventListener("click", function() { changePage(-1); });
     nextButton.addEventListener("click", function() { changePage(1); });
-    table.addEventListener("afterSort", function() { render(currentPage, false); });
+    table.addEventListener("afterSort", function() {
+      if (!renderFocusedRow()) render(currentPage, false);
+    });
+    window.addEventListener("hashchange", function() {
+      focusedRow = rowFromHash();
+      if (!renderFocusedRow()) render(pageFromUrl(), false);
+    });
 
     new Tablesort(table);
-    render(parseInt(new URLSearchParams(window.location.search).get("p"), 10) || 1, false);
+    focusedRow = rowFromHash();
+    if (!renderFocusedRow()) render(pageFromUrl(), false);
   })();
 </script>
 <link href="{{ site.baseurl }}/static/chambers.css" rel="stylesheet" />
