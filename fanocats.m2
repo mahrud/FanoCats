@@ -8,6 +8,12 @@ tables = {
     (6,2), (6,3)
     }
 
+alltables = splice {
+    apply(4..8,  r -> (4,r)),
+    apply(4..9,  r -> (5,r)),
+    apply(4..11, r -> (6,r)) -- TODO: 6,12 isn't computed yet!
+    }
+
 datadir = "~/Projects/M2/fano/_data/"
 
 toJSON Array := o -> L -> if #L == 0 then "[]" else (
@@ -28,7 +34,7 @@ storeFanoCatData(List, String) := (L, name) -> (
 	    X := fano(d,i);
 	    r := fanoPicardRank(d,i);
 	    L := fanoZonotopeDegrees(d,i);
-	    E := ExtTables#(d,i);
+	    E := if d < 4 or r < 4 or #L <= 10 then ExtTables#(d,i) else id_(ZZ^0);
 	    F := secondaryFan X;
 	    -- TODO: find a cleaner way to find the nef cone
 	    -- as a maximal cone of the secondary fan
@@ -54,5 +60,8 @@ needs "fanocats.m2"
 
 apply(tables, loadFanoDB)
 apply(tables, storeFanoCatData)
+
+apply(alltables, loadFanoDB)
+apply(alltables, storeFanoCatData)
 
 primitiveCollections fano(2,3)
