@@ -7,8 +7,18 @@ module MatrixFilters
     raise ArgumentError, "matrix columns must all have the same length" unless widths.length == 1
 
     rows = transpose ? columns.transpose : columns
-    rows = rows.map { |row| row.join(' & ') }
+    rows = rows.map do |row|
+      row.map { |entry| normalize_grouped_superscripts(entry) }.join(' & ')
+    end
     "\\begin{pmatrix}#{rows.join(' \\\\ ')}\\end{pmatrix}".gsub(/\*/, '')
+  end
+
+  def strip_times(input)
+    input.gsub(/\*/, '')
+  end
+
+  def normalize_grouped_superscripts(input)
+    input.gsub(/\^\(([^()]*)\)/, '^{\1}')
   end
 
   def parse_brace_list(source)

@@ -1,0 +1,40 @@
+{% assign helix = include.helix | default: page.helix %}
+{% assign variety = include.variety | default: page.variety %}
+
+<style>
+.pad3 {
+  display: inline-block;
+  width: 3ch; /* max length */
+  text-align: right;
+}
+</style>
+
+<div class="table-wrap">
+<table class="table table-hover" id="table-helix-{{ variety }}">
+  <thead>
+    <tr>
+      <th scope="col" class="text-center">Braid Group Word</th>
+      <th scope="col" class="text-center">Ranks</th>
+      <th scope="col" class="text-center">Chern</th>
+      <th scope="col">Ext table</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {% for cluster in helix %}
+    <tr>
+      <td class="align-middle row-identifier text-center">
+	<a class="identifier text-nowrap">${{ cluster[0] | strip_times }}$</a></td>
+      <td class="align-middle Ranks text-center">${{ cluster[1].Ranks | latex_matrix }}$</td>
+      <td class="align-middle Chern text-center">${{ cluster[1].Chern | latex_matrix }}$</td>
+      <td class="align-middle ExtTable" data-sort="{{ cluster[1].Ext }}">
+	${{ cluster[1].Ext | latex_matrix: false }}$</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<script type="text/javascript">
+  new Tablesort(document.getElementById("table-helix-{{ variety }}"));
+</script>
