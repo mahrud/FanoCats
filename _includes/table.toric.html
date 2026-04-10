@@ -1,7 +1,8 @@
-{% assign dim = include.dimension %}
-{% assign fanos = include.fanos %}
+{% assign varieties = include.varieties | default: page.varieties %}
+{% assign class     = include.class     | default: page.class %}
+{% assign dim       = class             | remove: 'fano-' | plus: 0 %}
 
-There are {{ fanos.size }} varieties in this class:
+There are {{ varieties.size }} varieties in this table:
 
 <style>
 .pad3 {
@@ -10,7 +11,7 @@ There are {{ fanos.size }} varieties in this class:
   text-align: right;
 }
 
-.fano-table-pagination {
+.table-pagination {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,7 +19,7 @@ There are {{ fanos.size }} varieties in this class:
   margin-top: 1rem;
 }
 
-.fano-table-pagination button[disabled] {
+.table-pagination button[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -36,10 +37,10 @@ There are {{ fanos.size }} varieties in this class:
 </style>
 
 <div class="table-wrap">
-<table class="table table-hover" id="table-toric-{{ dim }}">
+<table class="table table-hover" id="table-{{ class }}">
   <thead>
     <tr>
-      <th scope="col" class="text-center">$(\dim,\#)$</th>
+      <th scope="col" class="text-center">ID</th>
       <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} \mathrm{Pic}$</th>
       <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} K_0$</th>
       <th scope="col" class="text-center" data-sort-method="none">Chambers</th>
@@ -49,48 +50,55 @@ There are {{ fanos.size }} varieties in this class:
   </thead>
 
   <tbody>
-    {% for fano in fanos %}
-    <tr id="({{ dim }},{{ fano[0] }})" data-anchor="({{ dim }},{{ fano[0] }})">
+    {% for X in varieties %}
+    {% if class == 'hirzebruch' %}
+    {% assign identifier = X[0] %}
+    {% capture href %}{{ site.baseurl }}/hirzebruch/#{{ X[0] }}{% endcapture %}
+    {% else %}
+    {% capture identifier %}({{ dim }},{{ X[0] }}){% endcapture %}
+    {% capture href %}{{ site.baseurl }}/fano-{{ dim }}-{% if dim < 4 %}all{% elsif X[1].rho <= 2 %}2{% else %}{{ X[1].rho }}{% endif %}/#{{ identifier }}{% endcapture %}
+    {% endif %}
+    <tr id="{{ identifier }}" data-anchor="{{ identifier }}">
       <td class="align-middle row-identifier text-center">
-        <button type="button" class="row-toggle" aria-expanded="false" aria-controls="details-({{ dim }},{{ fano[0] }})">&#9656;</button>
-	<a class="identifier text-nowrap" data-sort={{ fano[0] }}
-	   href="{{ site.baseurl }}/toric-{{ dim }}-{% if dim < 4 %}all{% elsif fano[1].rho <= 2 %}2{% else %}{{ fano[1].rho }}{% endif %}/#({{ dim }},{{ fano[0] }})">
-	   $({{ dim }},{{ fano[0] }})$</a></td>
-      <td class="align-middle rkPic text-center">{{ fano[1].rho }}</td>
-      <td class="align-middle rkK0  text-center">{{ fano[1].cones[0] }}</td>
-      <td class="align-middle Chambers" data-chambers="{{ fano[1].chambers | escape }}"></td>
-      <td class="align-middle Zonotope" data-sort="{{ fano[1].theta[0] }}" style="white-space: nowrap;">
-	<span class="pad3">{{ fano[1].rays[0] }}:</span>     ${{ fano[1].degs     | latex_matrix: true }}$<br/>
-	<span class="pad3">{{ fano[1].theta[0] }}:</span> ${{ fano[1].theta[1] | latex_matrix: true }}$</td>
-      <td class="align-middle ExtTable" data-sort="{{ fano[1].Ext[1] }}">
-	${{ fano[1].Ext[0] | latex_matrix: false }}$</td>
+        <button type="button" class="row-toggle" aria-expanded="false" aria-controls="details-{{ identifier }}">&#9656;</button>
+	<a class="identifier text-nowrap" data-sort={{ X[0] }}
+	   href="{{ href }}">
+	   ${{ identifier }}$</a></td>
+      <td class="align-middle rkPic text-center">{{ X[1].rho }}</td>
+      <td class="align-middle rkK0  text-center">{{ X[1].cones[0] }}</td>
+      <td class="align-middle Chambers" data-chambers="{{ X[1].chambers | escape }}"></td>
+      <td class="align-middle Zonotope" data-sort="{{ X[1].theta[0] }}" style="white-space: nowrap;">
+	<span class="pad3">{{ X[1].rays[0] }}:</span>     ${{ X[1].degs     | latex_matrix: true }}$<br/>
+	<span class="pad3">{{ X[1].theta[0] }}:</span> ${{ X[1].theta[1] | latex_matrix: true }}$</td>
+      <td class="align-middle ExtTable" data-sort="{{ X[1].Ext[1] }}">
+	${{ X[1].Ext[0] | latex_matrix: false }}$</td>
     </tr>
-    <tr id="details-({{ dim }},{{ fano[0] }})" class="detail-row" style="display: none;">
+    <tr id="details-{{ identifier }}" class="detail-row" style="display: none;">
       <td colspan="6">
-        <pre>Rays:  {{ fano[1].rays[1] }}
-Cones: {{ fano[1].cones[1] }}
-Walls: {{ fano[1].primitive }}</pre>
+        <pre>Rays:  {{ X[1].rays[1] }}
+Cones: {{ X[1].cones[1] }}
+Walls: {{ X[1].primitive }}</pre>
       </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
-<div class="fano-table-pagination" id="table-toric-{{ dim }}-pagination">
-  <button type="button" id="table-toric-{{ dim }}-prev">Previous</button>
-  <span id="table-toric-{{ dim }}-page"></span>
-  <button type="button" id="table-toric-{{ dim }}-next">Next</button>
+<div class="table-pagination" id="table-{{ class }}-pagination">
+  <button type="button" id="table-{{ class }}-prev">Previous</button>
+  <span id="table-{{ class }}-page"></span>
+  <button type="button" id="table-{{ class }}-next">Next</button>
 </div>
 </div>
 
 <script type="text/javascript">
   (function() {
     var rowsPerPage = 20;
-    var table = document.getElementById("table-toric-{{ dim }}");
+    var table = document.getElementById("table-{{ class }}");
     var tbody = table.tBodies[0];
-    var prevButton = document.getElementById("table-toric-{{ dim }}-prev");
-    var nextButton = document.getElementById("table-toric-{{ dim }}-next");
-    var pageLabel  = document.getElementById("table-toric-{{ dim }}-page");
-    var pagination = document.getElementById("table-toric-{{ dim }}-pagination");
+    var prevButton = document.getElementById("table-{{ class }}-prev");
+    var nextButton = document.getElementById("table-{{ class }}-next");
+    var pageLabel  = document.getElementById("table-{{ class }}-page");
+    var pagination = document.getElementById("table-{{ class }}-pagination");
     var currentPage = 1;
     var focusedRow = null;
 

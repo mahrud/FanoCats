@@ -54,6 +54,31 @@ storeFanoCatData(List, String) := (L, name) -> (
 	    });
     (datadir | name) << json(h1, Indent => 2, Sort => true) << close)
 
+storeToricCatData = (L, Xs, name) -> (
+    h1 := hashTable apply(L, Xs, (i, X) ->
+	i => hashTable splice {
+	    r := rank picardGroup X;
+	    L := zonotopeDegrees X;
+	    E := ExtTableL(X, L);
+	    F := secondaryFan X;
+	    -- TODO: find a cleaner way to find the nef cone
+	    -- as a maximal cone of the secondary fan
+	    C := apply(cols nefGenerators X,
+		ray -> position(cols rays F, ray' -> ray == ray'));
+	    "rho" => r,
+	    "rays" => [#rays X, toString rays X],
+	    "cones" => [#max X, toString  max X],
+	    "theta" => [#L, toExternalString L],
+	    "degs"  =>  toExternalString degrees ring X,
+	    "Ext"   => [toExternalString entries E, isExceptional E],
+	    "chambers" => if r > 3 then #maxCones F else toExternalString(
+		-- TODO: rays in the secondary fan and degs are redundant
+		 entries transpose rays F, unique prepend_C maxCones F,
+		 flatten entries interiorVector dualCone coneFromVData rays F),
+	    "primitive" => toString primitiveCollections X,
+	    });
+    (datadir | name) << json(h1, Indent => 2, Sort => true) << close)
+
 end--
 restart
 needs "fanocats.m2"
@@ -65,3 +90,6 @@ apply(alltables, loadFanoDB)
 apply(alltables, storeFanoCatData)
 
 primitiveCollections fano(2,3)
+
+
+storeToricCatData(toList(0..5), apply(6, hirzebruchSurface), "hirzebruchs.json")

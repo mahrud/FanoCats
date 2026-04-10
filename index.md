@@ -26,35 +26,32 @@ The Ext tables encapsulate the rank of Ext groups among the $\Theta$-collection:
 For instance, for all but two threefolds, $(3,1)$ and $(3,10)$, the $\Theta$-collection is already a full strong exceptional collection. For those two, it can be shown that simply removing the line bundle corresponding to the row with higher extensions yields a full strong exceptional collection.
 
 ### Future goals:
-- add descriptions and symbolic identifiers (e.g. $\mathrm{Bl}_1\PP^2$ or $\PP(\OO_{\PP^1}\oplus\OO_{\PP^1}(1))$).
-- linkify the secondary fan relationships
+- interpret the primitive collections and use it to:
+  - add descriptions and symbolic identifiers (e.g. $\mathrm{Bl}_1\PP^2$ or $\PP(\OO_{\PP^1}\oplus\OO_{\PP^1}(1))$).
+  - linkify the secondary fan relationships
 - mention mutations that yield exceptional collections
 - for dim<=3, visualize the fan?
-- add dim 4,5,6 rho>3 data? (~70MB total)
+- add dim 4,5,6 rho>3 data? (~90MB total)
 - link to the corresponding entries in:
   - the Fanography database at <https://www.fanography.info/toric>
   - the GRDB database at <http://www.grdb.co.uk/search/toricsmooth>
   - the FanoSearch database at <http://coates.ma.ic.ac.uk/fanosearch/?page_id=277>
 - add references and code
-- add other toric varieties of interest:
-  - a page with a few different Hirzebruchs
-  - a page for a few Kleinschmidt varieties
-  - a page for some non-smooth or non-projectively normal ones
 
 Please get in touch with me if you'd like to use the Macaulay2 package used for these computations. \\
 Bug reports and contributions are welcome on [GitHub](https://github.com/mahrud/FanoCats/).
 
 ## Smooth Fano Toric Surfaces
-{% include table.toric.html dimension=2 fanos=site.data.toric-2 %}
+{% include table.toric.html class='fano-2' varieties=site.data.fano-2 %}
 
 ## Smooth Fano Toric Threefolds
-{% include table.toric.html dimension=3 fanos=site.data.toric-3 %}
+{% include table.toric.html class='fano-3' varieties=site.data.fano-3 %}
 
 ## Smooth Fano Toric 4,5,6-folds
 The are respectively 124, 866, and 7622 smooth fano toric varieties in dimensions 4, 5, and 6,
 thus they are further broken up by Picard rank.
 
-**Note: this data is computed, but only available online in Picard rank $\leq3$, so some links don't work yet.**
+**Note: this data is computed, but only available online in dim $\leq4$ or Picard rank $\leq3$, so gray links don't work yet.**
 
 <style>
 .pad7 {
@@ -78,11 +75,11 @@ thus they are further broken up by Picard rank.
     <tr>
       <td class="align-middle dim">${{ dim }}$ ({{ page.fanos[dim] }})</td>
       <td class="align-middle">
-		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-{% if dim < 4 %}all{% else %}2{% endif %}">
+		<a class="text-nowrap pad7" href="{{ site.baseurl }}/fano-{{ dim }}-{% if dim < 4 %}all{% else %}2{% endif %}">
 		  ≤2 (1+{{ page.rhos[dim][2] }})</a> &ensp; &ensp;
 		{% for rho in (3..max) %}
-		<a class="text-nowrap pad7" href="{{ site.baseurl }}/toric-{{ dim }}-{% if dim < 4 %}all{% else %}{{ rho }}{% endif %}"
-		  {% if dim > 3 and rho > 3 %}style="color: gray"{% endif %}>
+		<a class="text-nowrap pad7" href="{{ site.baseurl }}/fano-{{ dim }}-{% if dim < 4 %}all{% else %}{{ rho }}{% endif %}"
+		  {% if dim > 4 and rho > 3 %}style="color: gray"{% endif %}>
 		  {{ rho }} ({{ page.rhos[dim][rho] }})</a> &ensp;
 		{% endfor %}
 	  </td>
@@ -90,6 +87,21 @@ thus they are further broken up by Picard rank.
     {% endfor %}
   </tbody>
 </table>
+
+## Non-Fano Toric Varieties
+
+- [Hirzebruch surfaces]({{ site.baseurl }}/hirzebruch)
+- TODO: few Kleinschmidt varieties
+- TODO: some non-smooth or non-projectively normal ones
+
+## Other Experiments
+
+- [Helices on $\PP^2$]({{ site.baseurl }}/helix-P2)
+- [Helices on $\PP^3$]({{ site.baseurl }}/helix-P3)
+- [Helices on $\PP^4$]({{ site.baseurl }}/helix-P4)
+- [Helices on $\mathbb{H}_2$]({{ site.baseurl }}/helix-H2)
+- [Helices on $\mathbb{H}_2$ after a spherical twist]({{ site.baseurl }}/helix-H2-spherical)
+
 
 <footer>
   This website, FanoCats, is a personal project of [Mahrud Sayrafi](https://mahrud.github.io/). \\

@@ -4,4 +4,4 @@ title: Smooth Fano Toric Surfaces
 ---
 
 ## Smooth Fano Toric Surfaces (aka del Pezzo Surfaces)
-{% include table.toric.html dimension=2 fanos=site.data.toric-2 %}
+{% include table.toric.html class='fano-2' varieties=site.data.fano-2 %}
