@@ -3,13 +3,12 @@ needsPackage "JSON"
 
 tables = {
     2, 3,
-    (4,2), (4,3),
+--    (4,2), (4,3), (4,4), (4,5), (4,6), (4,7), (4,8)
     (5,2), (5,3),
     (6,2), (6,3)
     }
 
 alltables = splice {
-    apply(4..8,  r -> (4,r)),
     apply(4..9,  r -> (5,r)),
     apply(4..11, r -> (6,r)) -- TODO: 6,12 isn't computed yet!
     }
@@ -22,11 +21,11 @@ toJSON Array := o -> L -> if #L == 0 then "[]" else (
 storeFanoCatData = method()
 storeFanoCatData ZZ := d0 -> (
     h0 := selectKeys(new HashTable from ExtTables, (d,i) -> d == d0);
-    storeFanoCatData(keys h0, "toric-" | d0 | ".json"))
+    storeFanoCatData(keys h0, "fano-" | d0 | ".json"))
 storeFanoCatData(ZZ, ZZ) := (d0, r0) -> (
     h0 := selectKeys(new HashTable from ExtTables, (d,i) -> d == d0
 	and if r0 == 2 then fanoPicardRank(d,i) <= r0 else fanoPicardRank(d,i) == r0);
-    storeFanoCatData(keys h0, "toric-" | d0 | "-" | r0 | ".json"))
+    storeFanoCatData(keys h0, "fano-" | d0 | "-" | r0 | ".json"))
 
 storeFanoCatData(List, String) := (L, name) -> (
     h1 := hashTable apply(sort L, (d,i) ->
@@ -34,7 +33,7 @@ storeFanoCatData(List, String) := (L, name) -> (
 	    X := fano(d,i);
 	    r := fanoPicardRank(d,i);
 	    L := fanoZonotopeDegrees(d,i);
-	    E := if d < 4 or r < 4 or #L <= 10 then ExtTables#(d,i) else id_(ZZ^0);
+	    E := if d < 5 or r < 4 or #L <= 10 then ExtTables#(d,i) else id_(ZZ^0);
 	    F := secondaryFan X;
 	    -- TODO: find a cleaner way to find the nef cone
 	    -- as a maximal cone of the secondary fan
@@ -46,7 +45,7 @@ storeFanoCatData(List, String) := (L, name) -> (
 	    "theta" => [#L, toExternalString L],
 	    "degs"  =>  toExternalString degrees ring X,
 	    "Ext"   => [toExternalString entries E, isExceptional E],
-	    "chambers" => if r > 3 then #maxCones F else toExternalString(
+	    "chambers" => if r > 3 then #chambers X else toExternalString(
 		-- TODO: rays in the secondary fan and degs are redundant
 		 entries transpose rays F, unique prepend_C maxCones F,
 		 flatten entries interiorVector dualCone coneFromVData rays F),
