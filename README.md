@@ -3,7 +3,7 @@ layout: page
 title: FanoCats
 ---
 
-In each row, the first three columns denote the dimension and index of the variety in Macaulay2's database, accessible using [`smoothFanoToricVariety(d,i)`](https://mahrud.github.io/LearnM2/help/#NormalToricVarieties::smoothFanoToricVariety(ZZ,ZZ)), followed by the ranks of the Picard group (= #rays - dim) and Grothendieck group (= #maximal cones).
+In each row, the first three columns denote the dimension and index of the variety in Macaulay2's database, accessible using [`smoothFanoToricVariety(d,i)`](https://mahrud.github.io/LearnM2/help/#NormalToricVarieties::smoothFanoToricVariety(ZZ,ZZ)), followed by the ranks of the Picard group (= #rays - dim) and Grothendieck group (= #maximal cones). If the variety is a surface, then the fan is also displayed.
 
 Next, the if the Picard rank is at most 3, the secondary fan of the toric variety is displayed, with the nef chamber colored in blue. Note that for Picard rank 3, the picture is really a 2D section of the 3D fan. If you click on the black triangle to the left of the row, you can also see the ray generators, maximal cones, and primitive collections of the variety.
 
@@ -11,9 +11,13 @@ Next, the degrees of the variables in the Cox ring and degrees of the line bundl
 
 The Ext tables encapsulate the rank of Ext groups among the $\Theta$-collection: the $ij$-entry is a Laurent polynomial $\sum \operatorname{rk}\mathrm{Ext}^k(\OO(d_i),\OO(d_j)) \cdot T^k$. In this notation, the collection is exceptional if the table is upper triangular with ones on the diagonal, and it is strong if all entries are constant.
 
+{% assign data = site.data.fano-2 | subdict: "2" %}
+{% include table.toric.html class='fano-2' varieties=data %}
+
 For instance, for all but two threefolds, $(3,1)$ and $(3,10)$, the $\Theta$-collection is already a full strong exceptional collection. For those two, it can be shown that simply removing the line bundle corresponding to the row with higher extensions yields a full strong exceptional collection.
 
-
+{% assign data = site.data.fano-3 | subdict: "1", "10" %}
+{% include table.toric.html class='fano-3' varieties=data %}
 
 ### Future goals:
 - interpret the primitive collections and use it to:

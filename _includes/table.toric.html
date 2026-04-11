@@ -3,8 +3,6 @@
 {% assign dim       = class             | remove: 'fano-' | plus: 0 %}
 {% assign row_limit = include.row_limit | default: page.row_limit | default: 20 %}
 
-Data of {{ varieties.size }} varieties are available in this table:
-
 <style>
 .pad3 {
   display: inline-block;
