@@ -3,7 +3,7 @@ needsPackage "JSON"
 
 tables = {
     2, 3,
---    (4,2), (4,3), (4,4), (4,5), (4,6), (4,7), (4,8)
+    (4,2), (4,3), --(4,4), (4,5), (4,6), (4,7), (4,8)
     (5,2), (5,3),
     (6,2), (6,3)
     }
@@ -45,7 +45,7 @@ storeFanoCatData(List, String) := (L, name) -> (
 	    "theta" => [#L, toExternalString L],
 	    "degs"  =>  toExternalString degrees ring X,
 	    "Ext"   => [toExternalString entries E, isExceptional E],
-	    "chambers" => if r > 3 then #chambers X else toExternalString(
+	    "chambers" => if #chambers X > 100 then #chambers X else toExternalString(
 		-- TODO: rays in the secondary fan and degs are redundant
 		 entries transpose rays F, unique prepend_C maxCones F,
 		 flatten entries interiorVector dualCone coneFromVData rays F),
@@ -70,7 +70,7 @@ storeToricCatData = (L, Xs, name) -> (
 	    "theta" => [#L, toExternalString L],
 	    "degs"  =>  toExternalString degrees ring X,
 	    "Ext"   => [toExternalString entries E, isExceptional E],
-	    "chambers" => if r > 3 then #maxCones F else toExternalString(
+	    "chambers" => if #chambers X > 100 then #chambers X else toExternalString(
 		-- TODO: rays in the secondary fan and degs are redundant
 		 entries transpose rays F, unique prepend_C maxCones F,
 		 flatten entries interiorVector dualCone coneFromVData rays F),
@@ -96,7 +96,7 @@ storeToricCatData(toList(2..11), apply(2..11, Bl2PP'), "Bl2PPn.json")
 storeToricCatData(toList(0..40), apply(0..40, variety @@ smallAmpleToricDivisor_2), "small-2D-polytopes.json")
 storeToricCatData(toList(0..102), apply(0..102, variety @@ smallAmpleToricDivisor_3), "small-3D-polytopes.json")
 
-storeToricCatData(reverse toList(0..3), apply(reverse(0..3), king), "king.json")
+storeToricCatData(reverse toList(0..3), apply(reverse(0..3), king), "HillePerling.json")
 
 
 needs "king.m2"

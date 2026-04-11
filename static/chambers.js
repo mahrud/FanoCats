@@ -49,17 +49,6 @@
     });
   }
 
-  function orthonormalBasis(normal) {
-    var seed = Math.abs(normal[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0];
-    var first = normalize(cross(normal, seed));
-    var second = normalize(cross(normal, first));
-    return [first, second];
-  }
-
-  function pointFromPlaneCoordinates(coords, origin, basisX, basisY) {
-    return add(origin, add(scale(basisX, coords[0]), scale(basisY, coords[1])));
-  }
-
   function planeCoordinates(point, origin, basisX, basisY) {
     var delta = subtract(point, origin);
     return [dot(delta, basisX), dot(delta, basisY)];
@@ -157,7 +146,7 @@
     });
 
     return polygon.map(function (coords) {
-      return pointFromPlaneCoordinates(coords, planePoint, basisX, basisY);
+      return add(planePoint, add(scale(basisX, coords[0]), scale(basisY, coords[1])));
     });
   }
 
@@ -207,12 +196,6 @@
     }
   }
 
-  function validateNormal(normal) {
-    if (!Array.isArray(normal) || normal.length !== 3 || !normal.every(Number.isFinite) || norm(normal) < 1e-9) {
-      throw new Error("Normal vector must be a nonzero 3-vector.");
-    }
-  }
-
   function parseChambers(text) {
     var jsonish = text.replace(/\{/g, "[").replace(/\}/g, "]").replace(/\(/g, "[").replace(/\)/g, "]");
     var parsed = JSON.parse(jsonish);
@@ -231,6 +214,27 @@
     };
   }
 
+  function wallCountFromFirstCone(cones, fanDimension) {
+    if (!Array.isArray(cones) || cones.length === 0) {
+      return 0;
+    }
+
+    var firstCone = cones[0];
+    var firstConeEntries = new Set(firstCone);
+
+    return cones.slice(1).filter(function (cone) {
+      if (!Array.isArray(cone)) {
+        return false;
+      }
+
+      var shared = cone.filter(function (entry) {
+        return firstConeEntries.has(entry);
+      }).length;
+
+      return shared === fanDimension - 1;
+    }).length;
+  }
+
   function renderIntoCell(cell, payload) {
     var rays = payload.rays;
     var maximalCones = payload.cones;
@@ -244,7 +248,7 @@
 
     if (dimension === 1) {
       cell.innerHTML = [
-        '<svg class="chambers-svg" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" aria-label="Chambers">',
+        '<svg class="fan-svg" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg" aria-label="Fan">',
         '<line x1="10" y1="22" x2="90" y2="22" stroke="#111" stroke-width="1.5" />',
         '<circle cx="10" cy="22" r="2.3" fill="#111" />',
         '<circle cx="90" cy="22" r="2.3" fill="#111" />',
@@ -278,9 +282,9 @@
       };
     } else {
       var slicingNormal = normalize(normalVector);
-      var basis = orthonormalBasis(slicingNormal);
-      var planeX = basis[0];
-      var planeY = basis[1];
+      var seed = Math.abs(slicingNormal[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0];
+      var planeX = normalize(cross(slicingNormal, seed));
+      var planeY = normalize(cross(slicingNormal, planeX));
       labeledPoints = rays.map(function (ray) {
         return { ray: ray, point: intersectRayWithPlane(ray, slicingPoint, slicingNormal) };
       }).filter(function (entry) {
@@ -364,7 +368,7 @@
     }
 
     var svgParts = [];
-    svgParts.push('<svg class="chambers-svg" viewBox="0 0 ' + widthPx + " " + heightPx + '" xmlns="http://www.w3.org/2000/svg" aria-label="Chambers">');
+    svgParts.push('<svg class="fan-svg" viewBox="0 0 ' + widthPx + " " + heightPx + '" xmlns="http://www.w3.org/2000/svg" aria-label="Fan">');
 
     polygons.forEach(function (polygon, index) {
       var color = coneColors[index % coneColors.length];
@@ -390,19 +394,28 @@
     cell.innerHTML = svgParts.join("");
   }
 
-  function initChambers(root) {
-    var cells = (root || document).querySelectorAll("td.Chambers[data-chambers]");
+  function initChambers(root, element) {
+    var cells = (root || document).querySelectorAll("td." + element + "[data-fan]");
     cells.forEach(function (cell) {
       try {
-        var payload = parseChambers(cell.getAttribute("data-chambers"));
+        var payload = parseChambers(cell.getAttribute("data-fan"));
         if (Number.isInteger(payload.count)) {
           cell.textContent = payload.count + " chambers";
           return;
         }
+        if (element === "Fan" && Array.isArray(payload.rays) && Array.isArray(payload.rays[0]) && payload.rays[0].length > 2) {
+          cell.textContent = payload.cones.length + " cones";
+          return;
+        }
+        if (element === "Chambers" && Array.isArray(payload.rays) && Array.isArray(payload.rays[0]) && payload.rays[0].length >= 4) {
+          cell.innerHTML = payload.cones.length + " chambers,<br/>" + wallCountFromFirstCone(payload.cones, payload.rays[0].length) + " walls";
+          return;
+        }
         validateRays(payload.rays, payload.cones);
         validateCones(payload.cones, payload.rays.length);
-        if (payload.rays[0].length === 3) {
-          validateNormal(payload.normal);
+        if (payload.rays[0].length === 3 &&
+            (!Array.isArray(payload.normal) || payload.normal.length !== 3 || !payload.normal.every(Number.isFinite) || norm(payload.normal) < 1e-9)) {
+          throw new Error("Normal vector must be a nonzero 3-vector.");
         }
         renderIntoCell(cell, payload);
       } catch (error) {
@@ -415,9 +428,11 @@
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", function () {
-      initChambers(document);
+      initChambers(document, "Fan");
+      initChambers(document, "Chambers");
     });
   } else {
-    initChambers(document);
+    initChambers(document, "Fan");
+    initChambers(document, "Chambers");
   }
 }());

@@ -44,6 +44,7 @@ Data of {{ varieties.size }} varieties are available in this table:
       <th scope="col" class="text-center">ID</th>
       <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} \mathrm{Pic}$</th>
       <th scope="col" class="text-center" data-sort-method="number">$\operatorname{rk} K_0$</th>
+      <th scope="col" class="text-center" data-sort-method="none">Fan</th>
       <th scope="col" class="text-center" data-sort-method="none">Chambers</th>
       <th scope="col">Cox degrees and $\Theta$-collection</th>
       <th scope="col">Ext table</th>
@@ -67,9 +68,10 @@ Data of {{ varieties.size }} varieties are available in this table:
 	   ${{ identifier }}$</a></td>
       <td class="align-middle rkPic text-center">{{ X[1].rho }}</td>
       <td class="align-middle rkK0  text-center">{{ X[1].cones[0] }}</td>
-      <td class="align-middle Chambers" data-chambers="{{ X[1].chambers | escape }}"></td>
+      <td class="align-middle Fan"      data-fan="({{ X[1].rays[1] }}, {{ X[1].cones[1] }}, {0,0,0})"></td>
+      <td class="align-middle Chambers" data-fan="{{ X[1].chambers | escape }}"></td>
       <td class="align-middle Zonotope" data-sort="{{ X[1].theta[0] }}" style="white-space: nowrap;">
-	<span class="pad3">{{ X[1].rays[0] }}:</span>     ${{ X[1].degs     | latex_matrix: true }}$<br/>
+	<span class="pad3">{{ X[1].rays[0] }}:</span>  ${{ X[1].degs     | latex_matrix: true }}$<br/>
 	<span class="pad3">{{ X[1].theta[0] }}:</span> ${{ X[1].theta[1] | latex_matrix: true }}$</td>
       <td class="align-middle ExtTable" data-sort="{{ X[1].Ext[1] }}">
 	${{ X[1].Ext[0] | latex_matrix: false }}$</td>
@@ -78,7 +80,7 @@ Data of {{ varieties.size }} varieties are available in this table:
       <td colspan="6">
         <pre>Rays:  {{ X[1].rays[1] }}
 Cones: {{ X[1].cones[1] }}
-Walls: {{ X[1].primitive }}</pre>
+Primitive collections: {{ X[1].primitive }}</pre>
       </td>
     </tr>
     {% endfor %}

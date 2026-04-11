@@ -1,8 +1,9 @@
+td.Fan,
 td.Chambers {
   text-align: center;
 }
 
-td.Chambers svg.chambers-svg {
+svg.fan-svg {
   display: block;
   width: auto;
   min-width: 15vw;
