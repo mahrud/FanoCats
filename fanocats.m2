@@ -91,4 +91,12 @@ apply(alltables, storeFanoCatData)
 primitiveCollections fano(2,3)
 
 
-storeToricCatData(toList(0..5), apply(6, hirzebruchSurface), "hirzebruchs.json")
+storeToricCatData(toList(0..5), apply(6, hirzebruchSurface), "hirzebruch.json")
+
+
+storeToricCatData(toList(2..11), apply(2..11, Bl2PP'), "Bl2PPn.json")
+
+Bl2PP' = memoize Bl2PP
+X = Bl2PP' 20
+L := zonotopeDegrees X;
+E := ExtTableL(X, L);

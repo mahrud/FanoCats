@@ -42,7 +42,6 @@ kramdown:
 # Exclusions from the final site
 exclude:
   - TODO
-  - README.md
   - LICENSE.md
   - proof.gemspec
   - Makefile

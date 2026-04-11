@@ -1,8 +1,9 @@
 {% assign varieties = include.varieties | default: page.varieties %}
 {% assign class     = include.class     | default: page.class %}
 {% assign dim       = class             | remove: 'fano-' | plus: 0 %}
+{% assign row_limit = include.row_limit | default: page.row_limit | default: 20 %}
 
-There are {{ varieties.size }} varieties in this table:
+Data of {{ varieties.size }} varieties are available in this table:
 
 <style>
 .pad3 {
@@ -51,7 +52,7 @@ There are {{ varieties.size }} varieties in this table:
 
   <tbody>
     {% for X in varieties %}
-    {% if class == 'hirzebruch' %}
+    {% if class !=~ 'fano' %}
     {% assign identifier = X[0] %}
     {% capture href %}{{ site.baseurl }}/hirzebruch/#{{ X[0] }}{% endcapture %}
     {% else %}
@@ -92,7 +93,7 @@ Walls: {{ X[1].primitive }}</pre>
 
 <script type="text/javascript">
   (function() {
-    var rowsPerPage = 20;
+    var rowsPerPage = {{ row_limit }};
     var table = document.getElementById("table-{{ class }}");
     var tbody = table.tBodies[0];
     var prevButton = document.getElementById("table-{{ class }}-prev");
