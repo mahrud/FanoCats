@@ -53,12 +53,12 @@ Data of {{ varieties.size }} varieties are available in this table:
 
   <tbody>
     {% for X in varieties %}
-    {% if class !=~ 'fano' %}
-    {% assign identifier = X[0] %}
-    {% capture href %}{{ site.baseurl }}/{{ page.url }}/#{{ X[0] }}{% endcapture %}
-    {% else %}
+    {% if class contains "fano" %}
     {% capture identifier %}({{ dim }},{{ X[0] }}){% endcapture %}
     {% capture href %}{{ site.baseurl }}/fano-{{ dim }}-{% if dim < 4 %}all{% elsif X[1].rho <= 2 %}2{% else %}{{ X[1].rho }}{% endif %}/#{{ identifier }}{% endcapture %}
+    {% else %}
+    {% assign identifier = X[0] %}
+    {% capture href %}{{ site.baseurl }}{{ page.url }}/#{{ X[0] }}{% endcapture %}
     {% endif %}
     <tr id="{{ identifier }}" data-anchor="{{ identifier }}">
       <td class="align-middle row-identifier text-center">
@@ -188,8 +188,17 @@ Primitive collections: {{ X[1].primitive }}</pre>
       return true;
     }
 
+    function changeFocusedRow(delta) {
+      var allRows = rows();
+      var currentIndex = allRows.indexOf(focusedRow);
+      var nextRow = allRows[currentIndex + delta];
+
+      if (!nextRow) return;
+      window.location.hash = nextRow.getAttribute("data-anchor") || nextRow.id;
+    }
+
     function changePage(delta) {
-      if (focusedRow) return;
+      if (focusedRow) return changeFocusedRow(delta);
       render(currentPage + delta, true);
     }
 
