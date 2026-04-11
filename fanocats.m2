@@ -76,7 +76,7 @@ storeToricCatData = (L, Xs, name) -> (
 		 flatten entries interiorVector dualCone coneFromVData rays F),
 	    "primitive" => toString primitiveCollections X,
 	    });
-    (datadir | name) << json(h1, Indent => 2, Sort => true) << close)
+    (datadir | name) << json(h1, Indent => 2) << close)
 
 end--
 restart
@@ -92,11 +92,11 @@ primitiveCollections fano(2,3)
 
 
 storeToricCatData(toList(0..5), apply(6, hirzebruchSurface), "hirzebruch.json")
-
-
 storeToricCatData(toList(2..11), apply(2..11, Bl2PP'), "Bl2PPn.json")
+storeToricCatData(toList(0..40), apply(0..40, variety @@ smallAmpleToricDivisor_2), "small-2D-polytopes.json")
+storeToricCatData(toList(0..102), apply(0..102, variety @@ smallAmpleToricDivisor_3), "small-3D-polytopes.json")
 
-Bl2PP' = memoize Bl2PP
-X = Bl2PP' 20
-L := zonotopeDegrees X;
-E := ExtTableL(X, L);
+storeToricCatData(reverse toList(0..3), apply(reverse(0..3), king), "king.json")
+
+
+needs "king.m2"

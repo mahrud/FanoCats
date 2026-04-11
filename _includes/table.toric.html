@@ -54,7 +54,7 @@ Data of {{ varieties.size }} varieties are available in this table:
     {% for X in varieties %}
     {% if class !=~ 'fano' %}
     {% assign identifier = X[0] %}
-    {% capture href %}{{ site.baseurl }}/hirzebruch/#{{ X[0] }}{% endcapture %}
+    {% capture href %}{{ site.baseurl }}/{{ page.url }}/#{{ X[0] }}{% endcapture %}
     {% else %}
     {% capture identifier %}({{ dim }},{{ X[0] }}){% endcapture %}
     {% capture href %}{{ site.baseurl }}/fano-{{ dim }}-{% if dim < 4 %}all{% elsif X[1].rho <= 2 %}2{% else %}{{ X[1].rho }}{% endif %}/#{{ identifier }}{% endcapture %}
@@ -155,7 +155,7 @@ Walls: {{ X[1].primitive }}</pre>
       first = (currentPage - 1) * rowsPerPage;
       allRows.forEach(function(row, index) {
         row.style.display = index >= first && index < first + rowsPerPage ? "" : "none";
-        setExpanded(row, isExpanded(row));
+        setExpanded(row, rowsPerPage === 1 || isExpanded(row));
       });
       pageLabel.textContent = "Page " + currentPage + " of " + pageCount;
       prevButton.disabled = currentPage === 1;
