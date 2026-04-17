@@ -23,11 +23,11 @@ class ToricHelixPage < Jekyll::Page
   end
 
   def self.heading(variety)
-    "Partial helix of exceptional collections on $#{latex_variety(variety)}$"
+    "Partial helix of exceptional collections on #{latex_variety(variety)}"
   end
 
   def self.latex_variety(variety)
-    variety.gsub(/P(\d+)/, '\\PP^\1').gsub(/H(\d+)/, '\\mathbb{H}_\1')
+    variety.gsub(/P(\d+)/, '$\\PP^\1$').gsub(/H(\d+)/, '$\\mathbb{H}_\1$')
   end
 end
 
