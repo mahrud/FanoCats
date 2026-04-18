@@ -2,6 +2,10 @@
 {% assign class     = include.class     | default: page.class %}
 {% assign dim       = class             | remove: 'fano-' | plus: 0 %}
 {% assign row_limit = include.row_limit | default: page.row_limit | default: 20 %}
+{% assign force_svg = include.force_svg | default: false %}
+{% if dim >= 4 %}
+{% assign force_svg = true %}
+{% endif %}
 
 <style>
 .pad3 {
@@ -32,6 +36,10 @@
 
 .row-toggle[aria-expanded="true"] {
   transform: rotate(90deg);
+}
+
+.minimal-matrix {
+  vertical-align: middle;
 }
 </style>
 
@@ -72,7 +80,7 @@
 	<span class="pad3">{{ X[1].rays[0] }}:</span>  ${{ X[1].degs     | latex_matrix: true }}$<br/>
 	<span class="pad3">{{ X[1].theta[0] }}:</span> ${{ X[1].theta[1] | latex_matrix: true }}$</td>
       <td class="align-middle ExtTable" data-sort="{{ X[1].Ext[1] }}">
-	${{ X[1].Ext[0] | latex_matrix: false }}$</td>
+	{{ X[1].Ext[0] | matrix_preview: false, force_svg }}</td>
     </tr>
     <tr id="details-{{ identifier }}" class="detail-row" style="display: none;">
       <td colspan="6">
