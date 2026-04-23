@@ -41,6 +41,20 @@
 .minimal-matrix {
   vertical-align: middle;
 }
+
+.detail-row-cell {
+  max-width: 1px;
+}
+
+.detail-row-scroll {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.detail-row-scroll pre {
+  display: inline-block;
+  min-width: max-content;
+}
 </style>
 
 <div class="table-wrap">
@@ -83,10 +97,12 @@
 	{{ X[1].Ext[0] | matrix_preview: false, force_svg }}</td>
     </tr>
     <tr id="details-{{ identifier }}" class="detail-row" style="display: none;">
-      <td colspan="6">
-        <pre>Rays:  {{ X[1].rays[1] }}
+      <td colspan="7" class="detail-row-cell">
+        <div class="detail-row-scroll">
+          <pre>Rays:  {{ X[1].rays[1] }}
 Cones: {{ X[1].cones[1] }}
 Primitive collections: {{ X[1].primitive }}</pre>
+        </div>
       </td>
     </tr>
     {% endfor %}
