@@ -65,8 +65,3 @@ thus they are further broken up by Picard rank.
     {% endfor %}
   </tbody>
 </table>
-
-<footer>
-  This website, FanoCats, is a personal project of [Mahrud Sayrafi](https://mahrud.github.io/). \\
-  Bug reports and contributions are welcome on [GitHub](https://github.com/mahrud/FanoCats/).
-</footer>
