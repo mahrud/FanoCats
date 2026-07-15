@@ -18,9 +18,9 @@ permalink: /:title/
 encoding: utf-8
 
 # Collections for entries
-# collections:
-#   varieties:
-#     output: true
+collections:
+  examples:
+    output: true
 
 # Markdown specs
 markdown: kramdown
