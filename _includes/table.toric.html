@@ -99,9 +99,14 @@
     <tr id="details-{{ identifier }}" class="detail-row" style="display: none;">
       <td colspan="7" class="detail-row-cell">
         <div class="detail-row-scroll">
-          <pre>Rays:  {{ X[1].rays[1] }}
-Cones: {{ X[1].cones[1] }}
-Primitive collections: {{ X[1].primitive }}</pre>
+          <pre>Details:
+Rays ({{ X[1].rays[0] }}): {{ X[1].rays[1] }}
+Cones ({{ X[1].cones[0] }}): {{ X[1].cones[1] }}
+Primitive collections: {{ X[1].primitive }}
+Chambers: {{ X[1].chambers }}
+Cox degrees: {{ X[1].degs }}
+Theta-collection ({{ X[1].theta[0] }}): {{ X[1].theta[1] }}
+Ext matrix: {{ X[1].Ext[0] }}</pre>
         </div>
       </td>
     </tr>
