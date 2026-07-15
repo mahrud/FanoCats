@@ -49,6 +49,119 @@
     });
   }
 
+  function centeredNormal(rays, provided) {
+    // The slicing normal stored in the data is an arbitrary interior vector of
+    // the dual cone (Macaulay2's `interiorVector`), which may sit close to the
+    // cone's boundary and produce a badly stretched cross-section (a ray nearly
+    // parallel to the plane flies off toward infinity). Re-center it toward the
+    // direction that maximizes the smallest angle-cosine with every ray, i.e.
+    // the most balanced viewing plane. This is still a genuine planar slice, so
+    // every wall stays straight and all collinearities are preserved; we only
+    // pick a better plane. Projected subgradient ascent on the (concave)
+    // minimum-cosine, seeded from the provided normal so the result is never
+    // less centered than what the data supplied.
+    var unitRays = rays.map(normalize);
+    function minDot(candidate) {
+      return unitRays.reduce(function (least, u) {
+        return Math.min(least, dot(candidate, u));
+      }, Infinity);
+    }
+    var current = normalize(provided);
+    var best = current;
+    var bestMin = minDot(current);
+    for (var k = 0; k < 300; k += 1) {
+      var worst = unitRays[0];
+      var worstDot = dot(current, worst);
+      for (var i = 1; i < unitRays.length; i += 1) {
+        var value = dot(current, unitRays[i]);
+        if (value < worstDot) {
+          worstDot = value;
+          worst = unitRays[i];
+        }
+      }
+      current = normalize(add(current, scale(worst, 1 / (k + 2))));
+      var candidateMin = minDot(current);
+      if (candidateMin > bestMin) {
+        bestMin = candidateMin;
+        best = current;
+      }
+    }
+    return best;
+  }
+
+  function choosePlaneRotation(deltas, planeX, planeY, scale2d, labels) {
+    // The in-plane orientation of a slice is arbitrary, so we are free to spin
+    // it about the slicing axis. Pick the rotation that keeps the ray labels
+    // from colliding, preferring the smallest rotation that does so. Label box
+    // geometry below must match the values used when rendering text.
+    var labelOffsetX = 4;
+    var labelOffsetY = 4;
+    var labelFontSize = 8;
+    var labelCharWidth = 5;
+    var pointRadius = 2.3;
+
+    function boxesFor(cosPhi, sinPhi) {
+      var rotatedX = add(scale(planeX, cosPhi), scale(planeY, sinPhi));
+      var rotatedY = add(scale(planeX, -sinPhi), scale(planeY, cosPhi));
+      return deltas.map(function (delta, index) {
+        var px = dot(delta, rotatedX) * scale2d;
+        var py = -dot(delta, rotatedY) * scale2d;
+        var labelWidth = labels[index].length * labelCharWidth;
+        return {
+          label: [px + labelOffsetX, py - labelOffsetY - labelFontSize, px + labelOffsetX + labelWidth, py - labelOffsetY],
+          point: [px - pointRadius, py - pointRadius, px + pointRadius, py + pointRadius],
+        };
+      });
+    }
+
+    function overlapArea(a, b) {
+      var width = Math.min(a[2], b[2]) - Math.max(a[0], b[0]);
+      var height = Math.min(a[3], b[3]) - Math.max(a[1], b[1]);
+      return width > 0 && height > 0 ? width * height : 0;
+    }
+
+    function scoreFor(angle) {
+      var boxes = boxesFor(Math.cos(angle), Math.sin(angle));
+      var total = 0;
+      var i;
+      var j;
+      for (i = 0; i < boxes.length; i += 1) {
+        for (j = 0; j < boxes.length; j += 1) {
+          if (i < j) {
+            total += overlapArea(boxes[i].label, boxes[j].label);
+          }
+          if (i !== j) {
+            total += overlapArea(boxes[i].label, boxes[j].point);
+          }
+        }
+      }
+      return total;
+    }
+
+    // Candidates ordered by increasing magnitude so that ties resolve to the
+    // gentlest rotation; the strict comparison below keeps the first best.
+    var candidates = [0];
+    var step;
+    for (step = 6; step <= 180; step += 6) {
+      candidates.push(step, -step);
+    }
+    var bestAngle = 0;
+    var bestScore = Infinity;
+    candidates.forEach(function (degrees) {
+      var score = scoreFor(degrees * Math.PI / 180);
+      if (score < bestScore - 1e-6) {
+        bestScore = score;
+        bestAngle = degrees;
+      }
+    });
+
+    var phi = bestAngle * Math.PI / 180;
+    return {
+      x: add(scale(planeX, Math.cos(phi)), scale(planeY, Math.sin(phi))),
+      y: add(scale(planeX, -Math.sin(phi)), scale(planeY, Math.cos(phi))),
+    };
+  }
+
   function planeCoordinates(point, origin, basisX, basisY) {
     var delta = subtract(point, origin);
     return [dot(delta, basisX), dot(delta, basisY)];
@@ -281,7 +394,10 @@
         return [point[0], point[1]];
       };
     } else {
-      var slicingNormal = normalize(normalVector);
+      var slicingNormal = centeredNormal(rays, normalVector);
+      // Anchor the cutting plane one unit along the (re-centered) normal, so
+      // every ray with a positive dot product meets it on the correct side.
+      slicingPoint = slicingNormal;
       var seed = Math.abs(slicingNormal[0]) < 0.9 ? [1, 0, 0] : [0, 1, 0];
       var planeX = normalize(cross(slicingNormal, seed));
       var planeY = normalize(cross(slicingNormal, planeX));
@@ -290,6 +406,21 @@
       }).filter(function (entry) {
         return entry.point !== null;
       });
+
+      // Spin the slice in its own plane to keep the ray labels from colliding.
+      var planeDeltas = labeledPoints.map(function (entry) {
+        return subtract(entry.point, slicingPoint);
+      });
+      var invariantExtent = Math.max.apply(null, [1].concat(planeDeltas.map(function (delta) {
+        return Math.sqrt(Math.pow(dot(delta, planeX), 2) + Math.pow(dot(delta, planeY), 2));
+      })));
+      var rotatedBasis = choosePlaneRotation(
+        planeDeltas, planeX, planeY, 80 / invariantExtent,
+        labeledPoints.map(function (entry) { return formatRay(entry.ray); })
+      );
+      planeX = rotatedBasis.x;
+      planeY = rotatedBasis.y;
+
       var preliminaryPoints = labeledPoints.map(function (entry) {
         return planeCoordinates(entry.point, slicingPoint, planeX, planeY);
       });
