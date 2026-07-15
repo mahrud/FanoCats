@@ -1,9 +1,8 @@
 ---
 layout: page
 title: Hille‒Perling's Counterexample
+headline: "Hille‒Perling's Counterexample to King's Conjecture"
 ---
-
-## Hille‒Perling's Counterexample to King's Conjecture
 
 We begin with Hirzebruch surface of type 2 and consider 3 consecutive blow-ups. Hille and Perling showed in [[arxiv:math/0602258]](https://arxiv.org/abs/math/0602258v2) that this toric variety does not have a strong exceptional collection of line bundles.
 

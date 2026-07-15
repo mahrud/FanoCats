@@ -1,9 +1,8 @@
 ---
-layout: page
+layout: example
 title: Bl1Bl1PP2
+headline: '$\mathrm{Bl}_1\mathrm{Bl}_1\PP^2$: the double blow-up of $\PP^2$'
 ---
-
-## $\mathrm{Bl}_1\mathrm{Bl}_1\PP^2$: the double blow-up of $\PP^2$.
 
 This smooth projective variety is remarkable because it demonstrates that the walls in the secondary fan may not necessarily be complete hyperplanes.
 

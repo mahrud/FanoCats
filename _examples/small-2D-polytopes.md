@@ -1,6 +1,7 @@
 ---
 layout: page
 title: Small 2D Polytopes
+headline: 'Toric varieties embedding into small projective spaces'
 ---
 
 See [`smallAmpleToricDivisor(2,i)`](https://mahrud.github.io/LearnM2/packages/#NormalToricVarieties::smallAmpleToricDivisor) for more information.
